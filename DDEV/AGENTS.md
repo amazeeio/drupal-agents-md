@@ -530,9 +530,3 @@ SIMPLETEST_BASE_URL=http://my-drupal-project.ddev.site
 - **Drupal Answers**: https://drupal.stackexchange.com
 - **Drupal.org**: https://www.drupal.org
 - **Drupal Slack**: https://drupal.slack.com
-
-### Essential Tools
-- **Drush**: `ddev exec drush help` - Command-line interface
-- **Drupal Check**: `ddev exec drupal-check` - Deprecated code detection
-- **Webprofiler**: Development toolbar and profiling
-- **Composer**: `ddev exec composer` - Package management
