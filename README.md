@@ -62,20 +62,23 @@ Each AGENTS.md file contains:
 - Version control workflow
 - Pull request guidelines
 
-## How to Use
+## How to Use AGENTS.md?
 
-### For AI Agents
-1. **Choose the right guide** based on your development environment (DDEV vs Vanilla)
-2. **Follow the patterns** - Each section provides actionable guidance
-3. **Use bullet points** as implementation checklists
-4. **Apply best practices** for security, performance, and testing
+1. **Get the repository**
+   Download or clone this repository to your computer
 
-### For Human Developers
-These guides are optimized for AI agents but can also serve as:
-- **Quick reference** for Drupal development patterns
-- **Best practices** checklist
-- **Code review guidelines**
-- **Onboarding documentation** for new team members
+2. **Extract the files** (if downloading)
+   Extract the downloaded ZIP file and open the folder
+
+3. **Copy the right AGENTS.md file**
+   - If you use DDEV for development:
+     - Navigate to the `DDEV` folder
+     - Copy the `AGENTS.md` file
+     - Paste it in your Drupal project's main folder
+   - If you use traditional server setup:
+     - Navigate to the `Vanilla` folder
+     - Copy the `AGENTS.md` file
+     - Paste it in your Drupal project's main folder
 
 ## Key Features
 
