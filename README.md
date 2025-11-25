@@ -5,6 +5,16 @@ This repository contains specialized AGENTS.md files designed for AI coding agen
 > **⚠️ Warning: Work in Progress**
 > This is an evolving project. The guides are actively being refined and updated. Use with caution and always test in development environments.
 
+## Table of Contents
+
+- [Available Guides](#available-guides)
+- [What's Included](#whats-included)
+- [How to Use AGENTS.md?](#how-to-use-agentsmd)
+- [Key Features](#key-features)
+- [Architecture](#architecture)
+- [Contributing](#contributing)
+- [Resources](#resources)
+
 ## Available Guides
 
 ### 🐳 [DDEV/AGENTS.md](./DDEV/AGENTS.md)
