@@ -381,25 +381,6 @@ php -m  # Check installed extensions
 # Required: gd, xml, mbstring, json, pdo, curl
 ```
 
-### Common Development Issues
-```bash
-# White screen of death (WSOD)
-
-# Clear all caches aggressively
-drush cr && drush cache:reboot
-
-# Rebuild services container
-drush cr && vendor/bin/drush servicerunner
-
-# Configuration import/export issues
-drush config:status
-drush config:import --partial
-
-# Module not appearing
-drush pm:enable module_name -y
-drush cr
-```
-
 ### Performance Issues
 ```bash
 # Identify slow queries

@@ -446,6 +446,21 @@ ddev exec drush config:get system.performance
 ddev exec drush pm:enable memcache redis -y
 ```
 
+### Module/Theme Development Issues in DDEV
+```bash
+ddev exec drush cr
+
+# Service not found
+ddev exec drush config:get core.extension
+
+# Twig template not loading
+ddev exec drush cr
+
+# Cron issues
+ddev exec drush cron
+ddev exec drush watchdog:show --type=cron
+```
+
 ### Testing Issues in DDEV
 ```bash
 # PHPUnit configuration problems
@@ -456,6 +471,10 @@ cp web/core/phpunit.xml.dist phpunit.xml
 # Edit phpunit.xml for SIMPLETEST_DB and SIMPLETEST_BASE_URL
 SIMPLETEST_DB=mysql://db:db@db/db_test
 SIMPLETEST_BASE_URL=http://my-drupal-project.ddev.site
+
+# Browser tests failing
+# Install Selenium or ChromeDriver
+# Ensure test environment variables are set
 ```
 
 ## Advanced Development Patterns
