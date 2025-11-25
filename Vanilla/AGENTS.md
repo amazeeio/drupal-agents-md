@@ -52,7 +52,7 @@ Adhere to Drupal coding standards (PSR-12 with Drupal extensions). Use Coder and
 - **Use dependency injection** to inject services into controllers, forms, and plugins
 - **Core services** like `@current_user`, `@entity_type.manager`, `@database` are available
 - **Best practice**: Avoid static `\Drupal::` calls in favor of dependency injection
-- **Service discovery**: Use `drush debug:container` to see available services
+- **Service discovery**: Use `drush eval "print_r(\Drupal::getContainer()->getServiceIds());"` to see available services
 - **Location**: Place service classes in `src/` directory with proper namespace
 
 ### Entity API & Queries
@@ -356,7 +356,6 @@ drush cr && vendor/bin/drush servicerunner
 
 # Configuration import/export issues
 drush config:status
-drush config:diff
 drush config:import --partial
 
 # Module not appearing
@@ -375,27 +374,14 @@ drush config:get system.performance
 # Enable performance modules
 drush pm:enable memcache redis -y
 
-# Check render cache
-drush debug:cache
-
-# Monitor server resources
-top
-htop
-df -h
-```
-
 ### Module/Theme Development Issues
 ```bash
-# Plugin discovery not working
-drush plugin:debug
 drush cr
 
 # Service not found
-drush debug:container
 drush config:get core.extension
 
 # Twig template not loading
-drush theme:debug
 drush cr
 
 # Cron issues

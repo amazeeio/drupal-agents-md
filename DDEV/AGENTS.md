@@ -126,7 +126,7 @@ Adhere to Drupal coding standards (PSR-12 with Drupal extensions). Use Coder and
 - **Use dependency injection** to inject services into controllers, forms, and plugins
 - **Core services** like `@current_user`, `@entity_type.manager`, `@database` are available
 - **Best practice**: Avoid static `\Drupal::` calls in favor of dependency injection
-- **Service discovery**: Use `ddev exec drush debug:container` to see available services
+- **Service discovery**: Use `drush eval "print_r(\Drupal::getContainer()->getServiceIds());"` to see available services
 - **Location**: Place service classes in `src/` directory with proper namespace
 
 ### Entity API & Queries
@@ -215,7 +215,6 @@ ddev exec drush cache:rebuild         # Alternative cache clear
 # Configuration management
 ddev exec drush config:export         # Export configuration
 ddev exec drush config:import         # Import configuration
-ddev exec drush config:diff           # Compare config with directory
 
 # Database operations
 ddev snapshot                         # Create snapshot before changes
