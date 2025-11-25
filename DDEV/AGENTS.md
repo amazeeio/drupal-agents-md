@@ -1,4 +1,3 @@
-```markdown
 # AGENTS.md: AI Agent Guide for Drupal Development with DDEV
 
 **AI Agent Instructions**: This guide provides comprehensive instructions for AI coding agents working on Drupal projects using DDEV. Follow these guidelines for consistent, high-quality contributions. Human contributors should use README.md instead.
@@ -453,4 +452,3 @@ SIMPLETEST_BASE_URL=http://my-drupal-project.ddev.site
 - **Drupal Check**: `ddev exec drupal-check` - Deprecated code detection
 - **Webprofiler**: Development toolbar and profiling
 - **Composer**: `ddev exec composer` - Package management
-```

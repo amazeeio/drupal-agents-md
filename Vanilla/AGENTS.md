@@ -1,4 +1,3 @@
-```markdown
 # AGENTS.md: AI Agent Guide for Drupal Development
 
 **AI Agent Instructions**: This guide provides comprehensive instructions for AI coding agents working on Drupal projects using traditional server setups. Follow these guidelines for consistent, high-quality contributions. Human contributors should use README.md instead.
@@ -476,4 +475,3 @@ SIMPLETEST_BASE_URL=http://127.0.0.1:8888
 - **Drupal Unit Tests**: Built-in testing framework
 - **Webprofiler**: Development toolbar and profiling
 - **Composer**: Package management
-```
