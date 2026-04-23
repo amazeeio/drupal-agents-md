@@ -1,14 +1,16 @@
 ---
 title: Troubleshooting Common Issues
 description: >
-  Solutions to common Drupal development problems: installation failures,
-  performance issues, module/theme problems, and testing configuration.
+  Solutions to common Drupal development problems: installation failures, performance issues, module/theme problems, and testing configuration.
+
+
 tags: [troubleshooting, errors, debugging, fixes, common-issues]
 ---
 
 # Troubleshooting Common Issues
 
 ## Installation Problems
+
 ```bash
 # Composer memory issues
 php -d memory_limit=-1 /usr/local/bin/composer install
@@ -26,6 +28,7 @@ php -m               # Check installed extensions
 ```
 
 ## Performance Issues
+
 ```bash
 # Identify slow queries
 drush sql:query "SELECT * FROM watchdog WHERE type = 'php' ORDER BY wid DESC LIMIT 10"
@@ -35,6 +38,7 @@ drush config:get system.performance
 ```
 
 ## Module/Theme Development Issues
+
 ```bash
 # Most issues are solved by clearing caches
 drush cr
@@ -53,6 +57,7 @@ drush watchdog:show --type=cron
 ```
 
 ## Testing Issues
+
 ```bash
 # PHPUnit not configured
 cp web/core/phpunit.xml.dist phpunit.xml
@@ -68,6 +73,7 @@ cp web/core/phpunit.xml.dist phpunit.xml
 ```
 
 ## White Screen of Death (WSOD)
+
 ```bash
 # Check PHP error logs
 tail -f /var/log/apache2/error.log    # Apache
@@ -81,6 +87,7 @@ drush watchdog:show --severity=Error
 ```
 
 ## "The website encountered an unexpected error"
+
 ```bash
 drush cr                    # Clear caches first
 drush watchdog:show --severity=Error    # Read error details
@@ -88,6 +95,7 @@ drush updatedb              # Run pending updates
 ```
 
 ## Related Files
+
 - [21-workflow.md](21-workflow.md) — Debugging commands
 - [11-caching-performance.md](11-caching-performance.md) — Performance tuning
 - [19-composer.md](19-composer.md) — Composer issues

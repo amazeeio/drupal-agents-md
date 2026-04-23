@@ -1,8 +1,9 @@
 ---
 title: JavaScript & Frontend
 description: >
-  Drupal's JavaScript system: Drupal behaviors, library definitions,
-  drupalSettings, and attaching assets to render arrays and Twig templates.
+  Drupal's JavaScript system: Drupal behaviors, library definitions, drupalSettings, and attaching assets to render arrays and Twig templates.
+
+
 tags: [javascript, js, drupal-behaviors, libraries, drupal-settings, frontend]
 ---
 
@@ -13,23 +14,23 @@ tags: [javascript, js, drupal-behaviors, libraries, drupal-settings, frontend]
 ```javascript
 // js/my-module.js
 (function (Drupal, drupalSettings) {
-  'use strict';
+  "use strict";
 
   Drupal.behaviors.myModuleBehavior = {
     attach: function (context, settings) {
       // Runs on every page load AND AJAX response.
-      const elements = context.querySelectorAll('.my-element');
+      const elements = context.querySelectorAll(".my-element");
       elements.forEach(function (element) {
-        element.addEventListener('click', handleClick);
+        element.addEventListener("click", handleClick);
       });
     },
     detach: function (context, settings, trigger) {
       // Clean up when content is removed (AJAX, etc.).
-      const elements = context.querySelectorAll('.my-element');
+      const elements = context.querySelectorAll(".my-element");
       elements.forEach(function (element) {
-        element.removeEventListener('click', handleClick);
+        element.removeEventListener("click", handleClick);
       });
-    }
+    },
   };
 
   function handleClick(event) {
@@ -39,12 +40,14 @@ tags: [javascript, js, drupal-behaviors, libraries, drupal-settings, frontend]
 ```
 
 **Key differences from jQuery document.ready**:
+
 - `attach()` fires on initial page load AND every AJAX response
 - `context` scopes to the added/changed DOM fragment
 - `detach()` handles cleanup for removed content
 - Use vanilla JS — jQuery is deprecated in Drupal
 
 ## Library Definition (my_module.libraries.yml)
+
 ```yaml
 my_module.styles:
   version: VERSION
@@ -73,6 +76,7 @@ $build['#attached']['library'][] = 'my_module/my_module.styles';
 ```
 
 ## Passing Data to JS (drupalSettings)
+
 ```php
 $build['#attached']['drupalSettings']['my_module'] = [
   'endpoint' => '/api/items',
@@ -83,5 +87,6 @@ $build['#attached']['drupalSettings']['my_module'] = [
 Access in JS: `drupalSettings.my_module.endpoint`
 
 ## Related Files
+
 - [17-render-api.md](17-render-api.md) — #attached property
 - [08-forms.md](08-forms.md) — AJAX forms

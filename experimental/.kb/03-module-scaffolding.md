@@ -1,8 +1,9 @@
 ---
 title: Module Scaffolding Template
 description: >
-  Complete file structure and minimal starter files for creating a new Drupal
-  custom module. Use this as a reference every time you create a new module.
+  Complete file structure and minimal starter files for creating a new Drupal custom module. Use this as a reference every time you create a new module.
+
+
 tags: [module, scaffolding, template, structure, info-yml, composer]
 ---
 
@@ -53,10 +54,11 @@ modules/custom/my_module/
 ## Minimal Required Files
 
 **my_module.info.yml**:
+
 ```yaml
-name: 'My Module'
+name: "My Module"
 type: module
-description: 'Custom module description.'
+description: "Custom module description."
 core_version_requirement: ^10 || ^11
 package: Custom
 dependencies:
@@ -65,6 +67,7 @@ dependencies:
 ```
 
 **composer.json** (PSR-4 autoloading for tests):
+
 ```json
 {
   "name": "drupal/my_module",
@@ -84,6 +87,7 @@ dependencies:
 ```
 
 ## Related Files
+
 - [04-services-di.md](04-services-di.md) — How to define services
 - [07-hooks.md](07-hooks.md) — What goes in `.module` files
 - [09-routes-controllers.md](09-routes-controllers.md) — Route definitions

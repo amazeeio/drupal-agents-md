@@ -1,9 +1,9 @@
 ---
 title: Forms API
 description: >
-  Drupal Forms API: simple forms, configuration forms, validation, submission,
-  and AJAX patterns. Includes complete copy-pasteable examples for FormBase
-  and ConfigFormBase.
+  Drupal Forms API: simple forms, configuration forms, validation, submission, and AJAX patterns. Includes complete copy-pasteable examples for FormBase and ConfigFormBase.
+
+
 tags: [forms, form-api, config-form, ajax-form, validation]
 ---
 
@@ -131,6 +131,7 @@ class SettingsForm extends ConfigFormBase {
 ```
 
 ## AJAX Forms Quick Reference
+
 - Add `#ajax` property to any form element
 - Callback: `'::methodName'` syntax
 - Wrapper: target element ID for replacement
@@ -139,6 +140,7 @@ class SettingsForm extends ConfigFormBase {
 - Error handling: try-catch in callbacks
 
 ## Related Files
+
 - [09-routes-controllers.md](09-routes-controllers.md) — Routing forms to paths
 - [15-configuration.md](15-configuration.md) — Config storage details
 - [17-render-api.md](17-render-api.md) — Render arrays used in forms

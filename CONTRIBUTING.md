@@ -14,6 +14,7 @@ Thank you for your interest in improving the Drupal AI Agent Development Guides!
 ### Making Changes
 
 1. **Fork the repository** and create a feature branch:
+
    ```bash
    git checkout -b feature/my-improvement
    ```
@@ -27,6 +28,7 @@ Thank you for your interest in improving the Drupal AI Agent Development Guides!
    - Content follows the existing structure and tone
 
 4. **Commit with a descriptive message**:
+
    ```bash
    git commit -m "feat: add Recipe system section to all variants"
    ```
@@ -56,6 +58,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 ### Environment-Specific Content
 
 When adding content that applies to all variants:
+
 - Add it to **all three** files: DDEV, Vanilla, and Lagoon
 - Adapt commands to the environment:
   - DDEV: `ddev exec drush <command>`
@@ -66,7 +69,7 @@ When adding content that applies to all variants:
 ### Style
 
 - Use `**bold**` for emphasis on key terms
-- Use fenced code blocks with language identifiers (```php, ```yaml, ```bash)
+- Use fenced code blocks with language identifiers (`php,`yaml, ```bash)
 - Use markdown tables for command references
 - Keep paragraphs concise — AI agents benefit from density over prose
 - Add concrete code examples rather than abstract descriptions
@@ -96,16 +99,19 @@ When opening a PR, please include:
 
 ```markdown
 ## Description
+
 Brief description of what this PR changes and why.
 
 ## Affected Files
+
 - [ ] DDEV/AGENTS.md
 - [ ] Vanilla/AGENTS.md
 - [ ] Lagoon/AGENTS.md
 - [ ] README.md
-- [ ] Other: ___
+- [ ] Other: \_\_\_
 
 ## Type of Change
+
 - [ ] New content/section
 - [ ] Correction/fix
 - [ ] Code example addition
@@ -113,7 +119,9 @@ Brief description of what this PR changes and why.
 - [ ] CI/tooling
 
 ## Testing
+
 How did you verify the changes?
+
 - [ ] Rendered markdown preview
 - [ ] Checked code syntax
 - [ ] Verified commands work in target environment

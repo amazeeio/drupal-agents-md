@@ -19,6 +19,7 @@
 - [Additional Resources](#additional-resources)
 
 ## Project Overview
+
 - **Core Technology**: Drupal 10.x / 11.x (verify via `composer show drupal/core`)
 - **Hosting Platform**: amazee.io Lagoon (Kubernetes-based)
 - **Local Development**: DDEV or Docker Compose (Lagoon-compatible)
@@ -30,6 +31,7 @@
 ## Lagoon Quick Setup
 
 ### Prerequisites
+
 ```bash
 # Install Lagoon CLI (macOS)
 brew tap uselagoon/lagoon-cli
@@ -50,9 +52,11 @@ lagoon config add \
 ```
 
 ### Lagoon Project Files
+
 Lagoon requires these files in the repository root:
 
 **`.lagoon.yml`** — Lagoon configuration:
+
 ```yaml
 docker-compose-yaml: docker-compose.yml
 
@@ -94,12 +98,14 @@ tasks:
 ```
 
 **`docker-compose.yml`** (Lagoon-flavored):
+
 ```yaml
 # Must use the Lagoon-compatible docker-compose format
 # See: https://docs.lagoon.sh/lagoon/using-lagoon-the-basics/docker-compose-yml/
 ```
 
 ### Essential Lagoon Commands
+
 ```bash
 # Deployment
 lagoon deploy branch --project <project> --branch <branch>  # Deploy a branch
@@ -120,6 +126,7 @@ lagoon add variable --project <project> --environment <env> --name NAME --value 
 ```
 
 ### Database & File Synchronization
+
 ```bash
 # Sync database from production to local
 lagoon-sync sync mariadb -p <project> -e main -t local
@@ -136,19 +143,21 @@ drush rsync @lagoon.main:%files @self:%files
 ```
 
 ### Environment Variables
+
 Lagoon automatically injects these variables:
 
-| Variable | Description |
-|---|---|
-| `LAGOON_PROJECT` | Project name |
-| `LAGOON_ENVIRONMENT` | Environment name (branch) |
+| Variable                  | Description                               |
+| ------------------------- | ----------------------------------------- |
+| `LAGOON_PROJECT`          | Project name                              |
+| `LAGOON_ENVIRONMENT`      | Environment name (branch)                 |
 | `LAGOON_ENVIRONMENT_TYPE` | `production`, `staging`, or `development` |
-| `LAGOON_GIT_BRANCH` | Git branch name |
-| `LAGOON_GIT_SHA` | Full Git commit SHA |
-| `LAGOON_ROUTE` | Primary route/URL of the environment |
-| `LAGOON_ROUTES` | Comma-separated list of all routes |
+| `LAGOON_GIT_BRANCH`       | Git branch name                           |
+| `LAGOON_GIT_SHA`          | Full Git commit SHA                       |
+| `LAGOON_ROUTE`            | Primary route/URL of the environment      |
+| `LAGOON_ROUTES`           | Comma-separated list of all routes        |
 
 Use these in `settings.php` for environment-aware configuration:
+
 ```php
 // settings.php — Lagoon environment detection
 $lagoon_env_type = getenv('LAGOON_ENVIRONMENT_TYPE') ?: 'local';
@@ -167,6 +176,7 @@ else {
 ```
 
 ### Drush Aliases
+
 Lagoon provides Drush aliases automatically. Use them for remote operations:
 
 ```bash
@@ -251,10 +261,11 @@ web/modules/custom/my_module/
 ### Minimal Module Files
 
 **my_module.info.yml**:
+
 ```yaml
-name: 'My Module'
+name: "My Module"
 type: module
-description: 'Custom module description.'
+description: "Custom module description."
 core_version_requirement: ^10 || ^11
 package: Custom
 dependencies:
@@ -263,6 +274,7 @@ dependencies:
 ```
 
 **composer.json** (for PSR-4 autoloading in tests):
+
 ```json
 {
   "name": "drupal/my_module",
@@ -282,6 +294,7 @@ dependencies:
 ```
 
 ## Code Style and Standards
+
 Adhere to Drupal coding standards (PSR-12 with Drupal extensions). Use Coder and PHPCS for enforcement.
 
 - **PHP**:
@@ -295,6 +308,7 @@ Adhere to Drupal coding standards (PSR-12 with Drupal extensions). Use Coder and
 - **Twig**: `{{ }}` for output, `{% %}` for logic; always escape with `|e`
 
 - **Linting** (run locally or via DDEV):
+
   ```bash
   vendor/bin/phpcs --standard=Drupal --extensions=php,inc,module,install,info,yml src/
   vendor/bin/phpcs --standard=DrupalPractice --extensions=php,inc,module,install,info,yml src/
@@ -308,17 +322,19 @@ Adhere to Drupal coding standards (PSR-12 with Drupal extensions). Use Coder and
 ### Services & Dependency Injection
 
 **Create services** in `modulename.services.yml`:
+
 ```yaml
 # my_module.services.yml
 services:
   my_module.my_service:
     class: Drupal\my_module\Service\MyService
-    arguments: ['@entity_type.manager', '@logger.factory', '@config.factory']
+    arguments: ["@entity_type.manager", "@logger.factory", "@config.factory"]
     tags:
       - { name: backend_overridable }
 ```
 
 **Use dependency injection** in controllers, forms, and plugins:
+
 ```php
 namespace Drupal\my_module\Controller;
 
@@ -354,6 +370,7 @@ class MyController extends ControllerBase {
 ### Entity API & Queries
 
 **Loading entities**:
+
 ```php
 // Single entity
 $node = \Drupal::entityTypeManager()->getStorage('node')->load(123);
@@ -369,6 +386,7 @@ $nodes = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties([
 ```
 
 **Entity queries** (always prefer over raw SQL):
+
 ```php
 use Drupal\Core\Entity\Query\QueryInterface;
 
@@ -386,6 +404,7 @@ $nodes = $this->entityTypeManager->getStorage('node')->loadMultiple($ids);
 ```
 
 **Creating entities**:
+
 ```php
 $node = \Drupal::entityTypeManager()->getStorage('node')->create([
   'type' => 'article',
@@ -401,6 +420,7 @@ $node->save();
 ```
 
 **Field access**: Use entity field API instead of direct property access:
+
 ```php
 // Correct
 $node->get('field_my_field')->value;
@@ -413,6 +433,7 @@ $node->field_my_field->value;  // Magic __get — works but less explicit
 ### Plugin System
 
 **Block plugin example**:
+
 ```php
 namespace Drupal\my_module\Plugin\Block;
 
@@ -514,6 +535,7 @@ function my_module_cron(): void {
 ### Forms API
 
 **Simple form**:
+
 ```php
 namespace Drupal\my_module\Form;
 
@@ -584,6 +606,7 @@ class CustomForm extends FormBase {
 ```
 
 **Configuration form**:
+
 ```php
 namespace Drupal\my_module\Form;
 
@@ -635,26 +658,27 @@ class SettingsForm extends ConfigFormBase {
 ### Routes & Controllers
 
 **Route definition** (`my_module.routing.yml`):
+
 ```yaml
 my_module.content:
-  path: '/my-module/{node}'
+  path: "/my-module/{node}"
   defaults:
     _controller: '\Drupal\my_module\Controller\MyController::content'
-    _title: 'My Module Page'
+    _title: "My Module Page"
   requirements:
-    _permission: 'access content'
+    _permission: "access content"
     node: \d+
 
 my_module.settings:
-  path: '/admin/config/my-module/settings'
+  path: "/admin/config/my-module/settings"
   defaults:
     _form: '\Drupal\my_module\Form\SettingsForm'
-    _title: 'My Module Settings'
+    _title: "My Module Settings"
   requirements:
-    _permission: 'administer site configuration'
+    _permission: "administer site configuration"
 
 my_module.custom_access:
-  path: '/my-module/custom/{node}'
+  path: "/my-module/custom/{node}"
   defaults:
     _controller: '\Drupal\my_module\Controller\MyController::customPage'
     _title_callback: '\Drupal\my_module\Controller\MyController::pageTitle'
@@ -663,6 +687,7 @@ my_module.custom_access:
 ```
 
 **Controller**:
+
 ```php
 namespace Drupal\my_module\Controller;
 
@@ -705,6 +730,7 @@ class MyController extends ControllerBase {
 ```
 
 **Custom access checker**:
+
 ```php
 namespace Drupal\my_module\Access;
 
@@ -723,16 +749,18 @@ class MyAccessChecker implements AccessInterface {
 ```
 
 Register in `my_module.services.yml`:
+
 ```yaml
-  my_module.access_checker:
-    class: Drupal\my_module\Access\MyAccessChecker
-    tags:
-      - { name: access_check }
+my_module.access_checker:
+  class: Drupal\my_module\Access\MyAccessChecker
+  tags:
+    - { name: access_check }
 ```
 
 ## Security & Performance Guidelines
 
 ### Security Requirements
+
 - **Always sanitize user input**: Use `#plain_text` for untrusted content
 - **CSRF protection**: Include `#token` for forms with side effects
 - **Permissions**: Implement proper access checks and route requirements
@@ -743,6 +771,7 @@ Register in `my_module.services.yml`:
 - **Render arrays**: Never use `#markup` with unsanitized user input; use `#plain_text` or `check_plain()`
 
 ### Performance Best Practices
+
 - **Render caching**: Always add `#cache` array to render arrays with appropriate `tags` and `contexts`
 - **Cache tags**: Use entity-based tags like `['node:123']` or list-based tags like `['node_list']`
 - **Cache contexts**: Apply user-specific contexts like `['user.roles']` for personalized content
@@ -755,6 +784,7 @@ Register in `my_module.services.yml`:
 - **Entity loading**: Load multiple entities at once with `loadMultiple()` instead of individual loads
 
 **Render array with caching**:
+
 ```php
 $build = [
   '#theme' => 'item_list',
@@ -769,6 +799,7 @@ $build = [
 ```
 
 **Redis configuration for Lagoon** (in `settings.php`):
+
 ```php
 // Redis configuration for Lagoon
 if (getenv('LAGOON')) {
@@ -781,6 +812,7 @@ if (getenv('LAGOON')) {
 ```
 
 ### Caching Strategies
+
 - **Varnish (Lagoon default)**: Full-page caching for anonymous users with automatic purge
 - **Redis**: Persistent object cache — configure via `settings.php`
 - **Render cache**: Cache complex markup with proper tags/contexts
@@ -822,6 +854,7 @@ These are common mistakes that an AI agent must avoid:
 ## Testing & Quality Assurance
 
 ### PHPUnit Testing Framework
+
 Aim for ≥ 80% code coverage. Drupal provides multiple test types:
 
 ```bash
@@ -843,6 +876,7 @@ SIMPLETEST_DB=sqlite://localhost/tmp.sqlite vendor/bin/phpunit
 ```
 
 ### Unit Test Example
+
 ```php
 // tests/src/Unit/MyServiceTest.php
 namespace Drupal\Tests\my_module\Unit;
@@ -871,6 +905,7 @@ class MyServiceTest extends UnitTestCase {
 ```
 
 ### Kernel Test Example
+
 ```php
 // tests/src/Kernel/MyModuleKernelTest.php
 namespace Drupal\Tests\my_module\Kernel;
@@ -908,6 +943,7 @@ class MyModuleKernelTest extends KernelTestBase {
 ```
 
 ### Functional Test Example
+
 ```php
 // tests/src/Functional/MyModuleFunctionalTest.php
 namespace Drupal\Tests\my_module\Functional;
@@ -945,6 +981,7 @@ class MyModuleFunctionalTest extends BrowserTestBase {
 ```
 
 ### Code Quality Tools
+
 ```bash
 # Static analysis
 vendor/bin/phpstan analyse
@@ -959,6 +996,7 @@ vendor/bin/phpunit --group accessibility
 ```
 
 ### Before Submitting Code
+
 ```bash
 # Quality checklist
 vendor/bin/phpcs --standard=Drupal .
@@ -970,6 +1008,7 @@ drush updatedb
 ## Lagoon Development Workflow
 
 ### Project Structure
+
 - **Modules** → `web/modules/custom/<module_name>`
 - **Themes** → `web/themes/custom/<theme_name>`
 - **Configuration** → Export with `drush config:export`
@@ -978,6 +1017,7 @@ drush updatedb
 - **Docker Compose** → `docker-compose.yml` in project root
 
 ### Deployment Workflow
+
 ```bash
 # Feature development workflow
 git checkout -b feature/my-feature
@@ -999,6 +1039,7 @@ git push origin main
 ```
 
 ### Remote Drush Commands
+
 ```bash
 # Run Drush on a remote Lagoon environment
 drush @lagoon.main status
@@ -1017,6 +1058,7 @@ lagoon-sync sync files -p <project> -e main -t local
 ```
 
 ### Version Control Workflow
+
 - **Commit messages**: Format `[#123456] Brief descriptive title`
 - **Branch from**: `main` branch for features (auto-deployed by Lagoon)
 - **Atomic commits**: One logical change per commit
@@ -1029,6 +1071,7 @@ lagoon-sync sync files -p <project> -e main -t local
 Prefer EventSubscribers over hooks for many use cases. They are more testable and follow Symfony conventions.
 
 **EventSubscriber example**:
+
 ```php
 namespace Drupal\my_module\EventSubscriber;
 
@@ -1057,44 +1100,48 @@ class MyEventSubscriber implements EventSubscriberInterface {
 ```
 
 Register in `my_module.services.yml`:
+
 ```yaml
-  my_module.event_subscriber:
-    class: Drupal\my_module\EventSubscriber\MyEventSubscriber
-    tags:
-      - { name: event_subscriber }
+my_module.event_subscriber:
+  class: Drupal\my_module\EventSubscriber\MyEventSubscriber
+  tags:
+    - { name: event_subscriber }
 ```
 
 ### Configuration Management
 
 **Config schema** (`config/schema/my_module.schema.yml`):
+
 ```yaml
 my_module.settings:
   type: config_object
-  label: 'My Module settings'
+  label: "My Module settings"
   mapping:
     api_key:
       type: string
-      label: 'API Key'
+      label: "API Key"
     max_items:
       type: integer
-      label: 'Maximum items'
+      label: "Maximum items"
     enabled_types:
       type: sequence
-      label: 'Enabled content types'
+      label: "Enabled content types"
       sequence:
         type: string
-        label: 'Content type'
+        label: "Content type"
 ```
 
 **Config install** (`config/install/my_module.settings.yml`):
+
 ```yaml
-api_key: ''
+api_key: ""
 max_items: 50
 enabled_types:
   - article
 ```
 
 **Reading config**:
+
 ```php
 // In a service/controller (injected)
 $value = $this->configFactory->get('my_module.settings')->get('api_key');
@@ -1104,6 +1151,7 @@ $value = \Drupal::config('my_module.settings')->get('api_key');
 ```
 
 **Config workflow**:
+
 ```bash
 # Export all configuration
 drush config:export
@@ -1208,6 +1256,7 @@ class MyQueueWorker extends QueueWorkerBase implements ContainerFactoryPluginInt
 ```
 
 ### AJAX Forms
+
 - **Trigger elements**: Add `#ajax` property to form elements (select, checkbox, button)
 - **Callback method**: Reference callback method using `::methodName` syntax
 - **Wrapper element**: Specify target element ID for AJAX response replacement
@@ -1289,23 +1338,24 @@ drush cr
 ### JavaScript & Frontend
 
 **Drupal behaviors**:
+
 ```javascript
 (function (Drupal, drupalSettings) {
-  'use strict';
+  "use strict";
 
   Drupal.behaviors.myModuleBehavior = {
     attach: function (context, settings) {
-      const elements = context.querySelectorAll('.my-element');
+      const elements = context.querySelectorAll(".my-element");
       elements.forEach(function (element) {
-        element.addEventListener('click', handleClick);
+        element.addEventListener("click", handleClick);
       });
     },
     detach: function (context, settings, trigger) {
-      const elements = context.querySelectorAll('.my-element');
+      const elements = context.querySelectorAll(".my-element");
       elements.forEach(function (element) {
-        element.removeEventListener('click', handleClick);
+        element.removeEventListener("click", handleClick);
       });
-    }
+    },
   };
 })(Drupal, drupalSettings);
 ```
@@ -1313,6 +1363,7 @@ drush cr
 ## Troubleshooting
 
 ### Lagoon Deployment Issues
+
 ```bash
 # Check deployment status
 lagoon get environment --project <project> --environment <env>
@@ -1328,6 +1379,7 @@ drush @lagoon.<env> status
 ```
 
 ### Database Sync Issues
+
 ```bash
 # If lagoon-sync fails, try Drush
 drush sql:sync @lagoon.main @self
@@ -1337,6 +1389,7 @@ drush cr
 ```
 
 ### Performance Issues
+
 ```bash
 # Check remote cache settings
 drush @lagoon.main config:get system.performance
@@ -1351,18 +1404,21 @@ drush @lagoon.main php:eval "var_dump(\Drupal::service('cache.default')->get('te
 ## Additional Resources
 
 ### Lagoon Documentation
+
 - **Lagoon Docs**: https://docs.lagoon.sh
 - **Lagoon CLI**: https://github.com/uselagoon/lagoon-cli
 - **lagoon-sync**: https://github.com/uselagoon/lagoon-sync
 - **Drupal on Lagoon**: https://docs.lagoon.sh/lagoon/using-lagoon-the-basics/drupal/
 
 ### Drupal Documentation
+
 - **Drupal API**: https://api.drupal.org
 - **Developer Guide**: https://www.drupal.org/docs/develop
 - **Coding Standards**: https://www.drupal.org/docs/develop/standards
 - **Security Best Practices**: https://www.drupal.org/docs/develop/security
 
 ### Community Resources
+
 - **amazee.io Blog**: https://amazee.io/blog
 - **DrupalAtYourFingertips**: https://www.drupalatyourfingertips.com
 - **Drupal Answers**: https://drupal.stackexchange.com

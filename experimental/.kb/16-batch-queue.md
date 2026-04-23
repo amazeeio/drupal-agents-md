@@ -1,9 +1,9 @@
 ---
 title: Batch API & Queue API
 description: >
-  Processing large datasets and background tasks in Drupal. Batch API for
-  user-facing long operations with progress bars. Queue API for cron-based
-  background processing with QueueWorker plugins.
+  Processing large datasets and background tasks in Drupal. Batch API for user-facing long operations with progress bars. Queue API for cron-based background processing with QueueWorker plugins.
+
+
 tags: [batch, queue, queue-worker, cron, background-processing]
 ---
 
@@ -68,6 +68,7 @@ function my_module_batch_finished(bool $success, array $results, array $operatio
 ## Queue API (background processing)
 
 ### QueueWorker Plugin
+
 ```php
 namespace Drupal\my_module\Plugin\QueueWorker;
 
@@ -98,6 +99,7 @@ class MyQueueWorker extends QueueWorkerBase implements ContainerFactoryPluginInt
 ```
 
 ### Adding Items to Queue
+
 ```php
 \Drupal::queue('my_module_processor')->createItem(['type' => 'cleanup', 'node_id' => 123]);
 ```
@@ -107,5 +109,6 @@ class MyQueueWorker extends QueueWorkerBase implements ContainerFactoryPluginInt
 - Always log queue processing outcomes
 
 ## Related Files
+
 - [06-plugins.md](06-plugins.md) — Plugin system
 - [07-hooks.md](07-hooks.md) — hook_cron() for triggering queues

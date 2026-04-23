@@ -1,9 +1,9 @@
 ---
 title: Entity API & Queries
 description: >
-  Loading, creating, querying, and accessing field values on Drupal entities.
-  Covers EntityTypeManager, entity queries with accessCheck(TRUE), and field
-  access patterns.
+  Loading, creating, querying, and accessing field values on Drupal entities. Covers EntityTypeManager, entity queries with accessCheck(TRUE), and field access patterns.
+
+
 tags: [entity, node, entity-query, field-api, entity-type-manager]
 ---
 
@@ -85,6 +85,7 @@ $node->delete();                         // Delete entity
 ```
 
 ## Related Files
+
 - [04-services-di.md](04-services-di.md) — Injecting entity_type.manager
 - [11-caching-performance.md](11-caching-performance.md) — Cache tags for entities
 - [12-anti-patterns.md](12-anti-patterns.md) — accessCheck, deprecated functions

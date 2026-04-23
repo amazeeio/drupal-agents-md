@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased] — 2025-04-23
 
 ### Added
+
 - **Lagoon/AGENTS.md**: New variant for amazee.io Lagoon (Kubernetes-based hosting)
   - Lagoon CLI commands and configuration
   - lagoon-sync for database and file synchronization
@@ -49,6 +50,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Version compatibility table** in README
 
 ### Changed
+
 - Updated PHP requirement from 8.1+ to **8.3+**
 - Updated Drupal version from "10.x+" to **"10.x / 11.x"**
 - Updated Drush version from 12+ to **13+**
@@ -56,5 +58,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - README updated with Lagoon variant, version compatibility table, and improved structure
 
 ### Fixed
+
 - Fixed broken markdown code fence in Vanilla/AGENTS.md (Performance Issues section)
 - Expanded `.gitignore` with `.cursor`, `.DS_Store`, and `*.swp`

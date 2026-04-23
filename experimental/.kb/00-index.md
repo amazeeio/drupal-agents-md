@@ -1,9 +1,9 @@
 ---
 title: Drupal Development Knowledge Base — Index
 description: >
-  Master index for the Drupal AI Agent knowledge base. Read this file first to
-  discover which files to load for your current task. Each file is self-contained
-  with code examples, best practices, and cross-references to related topics.
+  Master index for the Drupal AI Agent knowledge base. Read this file first to discover which files to load for your current task. Each file is self-contained with code examples, best practices, and cross-references to related topics.
+
+
 tags: [index, overview, meta]
 ---
 
@@ -13,28 +13,28 @@ This knowledge base contains focused, self-contained guides for Drupal 10.x/11.x
 
 ## Quick Reference — When to Read What
 
-| You are working on... | Read this file |
-|---|---|
-| Setting up a new module | [03-module-scaffolding.md](03-module-scaffolding.md) |
-| Creating a service or using DI | [04-services-di.md](04-services-di.md) |
-| Loading/querying entities | [05-entity-api.md](05-entity-api.md) |
-| Building a plugin (block, field, etc.) | [06-plugins.md](06-plugins.md) |
-| Implementing hooks | [07-hooks.md](07-hooks.md) |
-| Building a form | [08-forms.md](08-forms.md) |
-| Defining routes or controllers | [09-routes-controllers.md](09-routes-controllers.md) |
-| Security concerns (XSS, CSRF, etc.) | [10-security.md](10-security.md) |
-| Caching or performance | [11-caching-performance.md](11-caching-performance.md) |
-| Want to know what NOT to do | [12-anti-patterns.md](12-anti-patterns.md) |
-| Writing tests | [13-testing.md](13-testing.md) |
-| Subscribing to events | [14-events.md](14-events.md) |
-| Managing configuration | [15-configuration.md](15-configuration.md) |
-| Batch or Queue processing | [16-batch-queue.md](16-batch-queue.md) |
-| Render arrays, #attached, lazy builders | [17-render-api.md](17-render-api.md) |
-| Data migration | [18-migration.md](18-migration.md) |
-| Managing Composer dependencies | [19-composer.md](19-composer.md) |
-| JavaScript or Drupal behaviors | [20-javascript.md](20-javascript.md) |
-| Dev commands, debugging, Drush | [21-workflow.md](21-workflow.md) |
-| Something is broken | [22-troubleshooting.md](22-troubleshooting.md) |
+| You are working on...                   | Read this file                                         |
+| --------------------------------------- | ------------------------------------------------------ |
+| Setting up a new module                 | [03-module-scaffolding.md](03-module-scaffolding.md)   |
+| Creating a service or using DI          | [04-services-di.md](04-services-di.md)                 |
+| Loading/querying entities               | [05-entity-api.md](05-entity-api.md)                   |
+| Building a plugin (block, field, etc.)  | [06-plugins.md](06-plugins.md)                         |
+| Implementing hooks                      | [07-hooks.md](07-hooks.md)                             |
+| Building a form                         | [08-forms.md](08-forms.md)                             |
+| Defining routes or controllers          | [09-routes-controllers.md](09-routes-controllers.md)   |
+| Security concerns (XSS, CSRF, etc.)     | [10-security.md](10-security.md)                       |
+| Caching or performance                  | [11-caching-performance.md](11-caching-performance.md) |
+| Want to know what NOT to do             | [12-anti-patterns.md](12-anti-patterns.md)             |
+| Writing tests                           | [13-testing.md](13-testing.md)                         |
+| Subscribing to events                   | [14-events.md](14-events.md)                           |
+| Managing configuration                  | [15-configuration.md](15-configuration.md)             |
+| Batch or Queue processing               | [16-batch-queue.md](16-batch-queue.md)                 |
+| Render arrays, #attached, lazy builders | [17-render-api.md](17-render-api.md)                   |
+| Data migration                          | [18-migration.md](18-migration.md)                     |
+| Managing Composer dependencies          | [19-composer.md](19-composer.md)                       |
+| JavaScript or Drupal behaviors          | [20-javascript.md](20-javascript.md)                   |
+| Dev commands, debugging, Drush          | [21-workflow.md](21-workflow.md)                       |
+| Something is broken                     | [22-troubleshooting.md](22-troubleshooting.md)         |
 
 ## Always Read First
 

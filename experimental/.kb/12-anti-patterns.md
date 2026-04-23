@@ -1,9 +1,9 @@
 ---
 title: Anti-Patterns — Never Do This
 description: >
-  14 critical Drupal development mistakes that AI agents must avoid. Every item
-  on this list is a common error that leads to bugs, security vulnerabilities,
-  or maintenance nightmares.
+  14 critical Drupal development mistakes that AI agents must avoid. Every item on this list is a common error that leads to bugs, security vulnerabilities, or maintenance nightmares.
+
+
 tags: [anti-patterns, best-practices, never-do-this, security, code-quality]
 ---
 

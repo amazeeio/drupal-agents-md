@@ -1,8 +1,9 @@
 ---
 title: Routes & Controllers
 description: >
-  Drupal routing system, controller classes, route parameters, and custom
-  access checkers. Includes complete YAML route definitions and PHP examples.
+  Drupal routing system, controller classes, route parameters, and custom access checkers. Includes complete YAML route definitions and PHP examples.
+
+
 tags: [routing, controllers, routes, access-checker, permissions]
 ---
 
@@ -13,26 +14,26 @@ tags: [routing, controllers, routes, access-checker, permissions]
 ```yaml
 # Basic controller route with parameter upcasting
 my_module.content:
-  path: '/my-module/{node}'
+  path: "/my-module/{node}"
   defaults:
     _controller: '\Drupal\my_module\Controller\MyController::content'
-    _title: 'My Module Page'
+    _title: "My Module Page"
   requirements:
-    _permission: 'access content'
+    _permission: "access content"
     node: \d+
 
 # Form route
 my_module.settings:
-  path: '/admin/config/my-module/settings'
+  path: "/admin/config/my-module/settings"
   defaults:
     _form: '\Drupal\my_module\Form\SettingsForm'
-    _title: 'My Module Settings'
+    _title: "My Module Settings"
   requirements:
-    _permission: 'administer site configuration'
+    _permission: "administer site configuration"
 
 # Route with custom access checker
 my_module.custom_access:
-  path: '/my-module/custom/{node}'
+  path: "/my-module/custom/{node}"
   defaults:
     _controller: '\Drupal\my_module\Controller\MyController::customPage'
     _title_callback: '\Drupal\my_module\Controller\MyController::pageTitle'
@@ -103,15 +104,17 @@ class MyAccessChecker implements AccessInterface {
 ```
 
 Register as a service with the `access_check` tag:
+
 ```yaml
 # my_module.services.yml
-  my_module.access_checker:
-    class: Drupal\my_module\Access\MyAccessChecker
-    tags:
-      - { name: access_check }
+my_module.access_checker:
+  class: Drupal\my_module\Access\MyAccessChecker
+  tags:
+    - { name: access_check }
 ```
 
 ## Access Control Options
+
 - `_permission: 'permission name'` — Permission-based
 - `_role: 'role_name'` — Role-based
 - `_access: 'TRUE'` — Public route
@@ -119,6 +122,7 @@ Register as a service with the `access_check` tag:
 - `_entity_access: 'node.view'` — Entity-level access
 
 ## Related Files
+
 - [04-services-di.md](04-services-di.md) — DI in controllers
 - [10-security.md](10-security.md) — Security best practices
 - [08-forms.md](08-forms.md) — Routing forms

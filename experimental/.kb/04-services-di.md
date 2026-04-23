@@ -1,9 +1,9 @@
 ---
 title: Services & Dependency Injection
 description: >
-  How to define, register, and use Drupal services with dependency injection.
-  Covers service definitions, constructor injection, ContainerFactoryPluginInterface,
-  and core service discovery. ALWAYS prefer DI over static \Drupal:: calls.
+  How to define, register, and use Drupal services with dependency injection. Covers service definitions, constructor injection, ContainerFactoryPluginInterface, and core service discovery. ALWAYS prefer DI over static \Drupal:: calls.
+
+
 tags: [services, dependency-injection, di, container, service-container]
 ---
 
@@ -12,11 +12,12 @@ tags: [services, dependency-injection, di, container, service-container]
 ## Define a Service
 
 **my_module.services.yml**:
+
 ```yaml
 services:
   my_module.my_service:
     class: Drupal\my_module\Service\MyService
-    arguments: ['@entity_type.manager', '@logger.factory', '@config.factory']
+    arguments: ["@entity_type.manager", "@logger.factory", "@config.factory"]
     tags:
       - { name: backend_overridable }
 ```
@@ -24,6 +25,7 @@ services:
 ## Use Dependency Injection
 
 ### In Controllers
+
 ```php
 namespace Drupal\my_module\Controller;
 
@@ -51,6 +53,7 @@ class MyController extends ControllerBase {
 ```
 
 ### In Plugins
+
 ```php
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 
@@ -77,31 +80,35 @@ class MyBlock extends BlockBase implements ContainerFactoryPluginInterface {
 ```
 
 ## Common Core Services
-| Service ID | Purpose |
-|---|---|
+
+| Service ID             | Purpose                    |
+| ---------------------- | -------------------------- |
 | `@entity_type.manager` | Entity loading and queries |
-| `@config.factory` | Read/write configuration |
-| `@logger.factory` | Logging (watchdog) |
-| `@current_user` | Current user account |
-| `@database` | Database connection |
-| `@module_handler` | Module system |
-| `@renderer` | Render API |
-| `@string_translation` | Translation (`t()`) |
-| `@messenger` | Status messages to user |
-| `@request_stack` | HTTP request |
-| `@state` | State API (transient data) |
+| `@config.factory`      | Read/write configuration   |
+| `@logger.factory`      | Logging (watchdog)         |
+| `@current_user`        | Current user account       |
+| `@database`            | Database connection        |
+| `@module_handler`      | Module system              |
+| `@renderer`            | Render API                 |
+| `@string_translation`  | Translation (`t()`)        |
+| `@messenger`           | Status messages to user    |
+| `@request_stack`       | HTTP request               |
+| `@state`               | State API (transient data) |
 
 ## Service Discovery
+
 ```bash
 drush php:eval "print_r(\Drupal::getContainer()->getServiceIds());"
 ```
 
 ## Rules
+
 - **ALWAYS** use dependency injection in services, controllers, and plugins
 - **NEVER** use `\Drupal::` static calls in services/controllers/plugins — see [12-anti-patterns.md](12-anti-patterns.md)
 - The only acceptable `\Drupal::` use is in `.module` hook functions — and even there, delegate to a service
 
 ## Related Files
+
 - [05-entity-api.md](05-entity-api.md) — Using entity_type.manager service
 - [06-plugins.md](06-plugins.md) — DI in plugins
 - [12-anti-patterns.md](12-anti-patterns.md) — Why static calls are bad

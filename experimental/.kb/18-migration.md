@@ -1,8 +1,9 @@
 ---
 title: Migration API
 description: >
-  Drupal's Migration API: source, process, and destination plugins with YAML
-  definitions and custom process plugin example.
+  Drupal's Migration API: source, process, and destination plugins with YAML definitions and custom process plugin example.
+
+
 tags: [migration, migrate, migrate-api, process-plugin, source, destination]
 ---
 
@@ -13,7 +14,7 @@ tags: [migration, migrate, migrate-api, process-plugin, source, destination]
 ```yaml
 # migrations/my_migration.yml
 id: my_migration
-label: 'My Custom Migration'
+label: "My Custom Migration"
 source:
   plugin: csv
   path: /path/to/data.csv
@@ -21,10 +22,8 @@ source:
   keys:
     - id
   column_names:
-    -
-      id: [id, 'Unique ID']
-    -
-      title: [title, 'Title']
+    - id: [id, "Unique ID"]
+    - title: [title, "Title"]
 
 process:
   title: title
@@ -72,6 +71,7 @@ class MyCustomProcess extends ProcessPluginBase {
 ```
 
 ## Common Source Plugins
+
 - `csv` — CSV file (requires `migrate_source_csv`)
 - `d7_node`, `d7_user` — Drupal 7 migrations
 - `sql` — Direct database queries
@@ -79,6 +79,7 @@ class MyCustomProcess extends ProcessPluginBase {
 - `embedded_data` — Inline data for testing
 
 ## Common Process Plugins
+
 - `get` — Pass through value
 - `default_value` — Set default
 - `callback` — PHP function callback
@@ -87,12 +88,14 @@ class MyCustomProcess extends ProcessPluginBase {
 - `skip_on_empty` — Skip row if empty
 
 ## Common Destination Plugins
+
 - `entity:node` — Create nodes
 - `entity:user` — Create users
 - `entity:taxonomy_term` — Create terms
 - `config` — Write to config
 
 ## Drush Migration Commands
+
 ```bash
 drush migrate:import my_migration            # Run migration
 drush migrate:rollback my_migration          # Rollback
@@ -101,5 +104,6 @@ drush migrate:messages my_migration          # View messages/errors
 ```
 
 ## Related Files
+
 - [06-plugins.md](06-plugins.md) — Plugin system (migrate uses plugins)
 - [21-workflow.md](21-workflow.md) — Drush commands

@@ -1,8 +1,9 @@
 ---
 title: Render API Deep Dive
 description: >
-  Drupal's Render API: render arrays, #cache, #attached, #lazy_builder,
-  #create_placeholder, #pre_render, #post_render, and render element types.
+  Drupal's Render API: render arrays, #cache, #attached, #lazy_builder, #create_placeholder, #pre_render, #post_render, and render element types.
+
+
 tags: [render, render-array, attached, lazy-builder, placeholder, theme]
 ---
 
@@ -42,23 +43,24 @@ $build = [
 
 ## Key Properties
 
-| Property | Purpose |
-|---|---|
-| `#type` | Render element type (`container`, `html_tag`, `item_list`, etc.) |
-| `#theme` | Theme hook to use for rendering |
-| `#markup` | Raw HTML (trusted only!) |
-| `#plain_text` | Auto-escaped text output |
-| `#cache` | Cache metadata (keys, tags, contexts, max-age) |
-| `#attached` | Libraries, settings, HTTP headers |
-| `#weight` | Sort order |
-| `#attributes` | HTML attributes (class, id, data-*) |
-| `#access` | Boolean access check |
-| `#lazy_builder` | Deferred rendering callback |
-| `#create_placeholder` | Generate BigPipe placeholder |
-| `#pre_render` | Callbacks to modify before rendering |
-| `#post_render` | Callbacks to modify after rendering |
+| Property              | Purpose                                                          |
+| --------------------- | ---------------------------------------------------------------- |
+| `#type`               | Render element type (`container`, `html_tag`, `item_list`, etc.) |
+| `#theme`              | Theme hook to use for rendering                                  |
+| `#markup`             | Raw HTML (trusted only!)                                         |
+| `#plain_text`         | Auto-escaped text output                                         |
+| `#cache`              | Cache metadata (keys, tags, contexts, max-age)                   |
+| `#attached`           | Libraries, settings, HTTP headers                                |
+| `#weight`             | Sort order                                                       |
+| `#attributes`         | HTML attributes (class, id, data-\*)                             |
+| `#access`             | Boolean access check                                             |
+| `#lazy_builder`       | Deferred rendering callback                                      |
+| `#create_placeholder` | Generate BigPipe placeholder                                     |
+| `#pre_render`         | Callbacks to modify before rendering                             |
+| `#post_render`        | Callbacks to modify after rendering                              |
 
 ## #attached — Libraries & Settings
+
 ```php
 $build['#attached'] = [
   'library' => ['my_module/my_module.styles'],
@@ -69,6 +71,7 @@ $build['#attached'] = [
 ```
 
 ## #lazy_builder — Deferred Rendering
+
 ```php
 $build['expensive'] = [
   '#lazy_builder' => [
@@ -80,9 +83,11 @@ $build['expensive'] = [
 ```
 
 ## Common Render Element Types
+
 `container`, `html_tag`, `item_list`, `link`, `table`, `status_messages`, `more_link`, `operations`
 
 ## Related Files
+
 - [11-caching-performance.md](11-caching-performance.md) — Cache metadata details
 - [20-javascript.md](20-javascript.md) — Attaching JS libraries
 - [08-forms.md](08-forms.md) — Forms use render arrays

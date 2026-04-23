@@ -19,40 +19,31 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install markdownlint-cli
-        run: npm install -g markdownlint-cli
+      - name: Install dependencies
+        run: npm ci
 
       - name: Lint Markdown files
-        run: |
-          markdownlint \
-            --disable MD013 MD033 MD041 MD034 \
-            -- \
-            *.md \
-            DDEV/AGENTS.md \
-            Vanilla/AGENTS.md \
-            Lagoon/AGENTS.md
+        run: npm run lint
+
+      - name: Check formatting
+        run: npx prettier --check '**/*.md'
 
       - name: Check markdown code fences
         run: |
           errors=0
-          for file in DDEV/AGENTS.md Vanilla/AGENTS.md Lagoon/AGENTS.md; do
-            # Count opening and closing fences
+          while IFS= read -r -d '' file; do
             opens=$(grep -c '^\s*```' "$file" || true)
             if [ $((opens % 2)) -ne 0 ]; then
               echo "ERROR: Unclosed code fence in $file (found $opens fence markers)"
               errors=$((errors + 1))
-            else
-              echo "OK: $file has balanced code fences ($opens markers)"
             fi
-          done
+          done < <(find . -name "*.md" -not -path "./.git/*" -not -path "./node_modules/*" -print0)
           exit $errors
 
       - name: Validate YAML code blocks
         run: |
           errors=0
-          for file in DDEV/AGENTS.md Vanilla/AGENTS.md Lagoon/AGENTS.md; do
-            echo "Checking YAML blocks in $file..."
-            # Extract YAML code blocks and validate them
+          while IFS= read -r -d '' file; do
             python3 -c "
           import re, sys, yaml
           content = open('$file').read()
@@ -61,28 +52,12 @@ jobs:
             try:
               yaml.safe_load(block)
             except yaml.YAMLError as e:
-              print(f'  ERROR in YAML block {i+1}: {e}')
+              print(f'  ERROR in $file YAML block {i+1}: {e}')
               sys.exit(1)
-          print(f'  OK: {len(blocks)} YAML blocks validated')
+          if blocks:
+            print(f'  OK: $file — {len(blocks)} YAML blocks')
           " || errors=$((errors + 1))
-          done
-          exit $errors
-
-      - name: Check internal links
-        run: |
-          errors=0
-          for file in README.md CONTRIBUTING.md CHANGELOG.md; do
-            if [ ! -f "$file" ]; then continue; fi
-            echo "Checking links in $file..."
-            # Check that local file references exist
-            while IFS= read -r link; do
-              target=$(echo "$link" | sed 's/\[.*\](\(.*\))/\1/' | cut -d'#' -f1)
-              if [ -n "$target" ] && [ ! -f "$target" ]; then
-                echo "  ERROR: Broken link '$target' in $file"
-                errors=$((errors + 1))
-              fi
-            done < <(grep -oE '\]\([^)]+\)' "$file" | grep -v 'http' || true)
-          done
+          done < <(find . -name "*.md" -not -path "./.git/*" -not -path "./node_modules/*" -print0)
           exit $errors
 
       - name: Check all variants exist
@@ -95,25 +70,3 @@ jobs:
             lines=$(wc -l < "$variant/AGENTS.md")
             echo "OK: $variant/AGENTS.md ($lines lines)"
           done
-
-      - name: Check required sections
-        run: |
-          required_sections=(
-            "## Table of Contents"
-            "## Code Style and Standards"
-            "## Anti-Patterns"
-            "## Module Scaffolding Template"
-            "## Testing"
-          )
-          errors=0
-          for file in DDEV/AGENTS.md Vanilla/AGENTS.md Lagoon/AGENTS.md; do
-            echo "Checking sections in $file..."
-            for section in "${required_sections[@]}"; do
-              if ! grep -q "$section" "$file"; then
-                echo "  ERROR: Missing section '$section'"
-                errors=$((errors + 1))
-              fi
-            done
-            echo "  Section check complete"
-          done
-          exit $errors

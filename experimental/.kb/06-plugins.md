@@ -1,14 +1,16 @@
 ---
 title: Plugin System
 description: >
-  Drupal's plugin system: annotation-based discovery, base classes, and the
-  ContainerFactoryPluginInterface pattern. Includes a complete Block plugin example.
+  Drupal's plugin system: annotation-based discovery, base classes, and the ContainerFactoryPluginInterface pattern. Includes a complete Block plugin example.
+
+
 tags: [plugin, block, field-formatter, field-widget, queue-worker, annotation]
 ---
 
 # Plugin System
 
 ## Plugin Types
+
 Blocks, field formatters, field widgets, field types, menu links, QueueWorker, Condition, Action, and more.
 
 ## Block Plugin Example (with DI)
@@ -74,6 +76,7 @@ class MyCustomBlock extends BlockBase implements ContainerFactoryPluginInterface
 - **DI**: Always implement `ContainerFactoryPluginInterface` when your plugin needs services
 
 ## Related Files
+
 - [04-services-di.md](04-services-di.md) — Dependency injection patterns
 - [16-batch-queue.md](16-batch-queue.md) — QueueWorker plugin type
 - [06-plugins.md](06-plugins.md) — This file (self-reference)

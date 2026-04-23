@@ -2,8 +2,7 @@
 
 This repository contains specialized AGENTS.md files designed for AI coding agents working on Drupal projects. These guides provide comprehensive instructions for Drupal development following modern best practices.
 
-> **⚠️ Warning: Work in Progress**
-> This is an evolving project. The guides are actively being refined and updated. Use with caution and always test in development environments.
+> **⚠️ Warning: Work in Progress** This is an evolving project. The guides are actively being refined and updated. Use with caution and always test in development environments.
 
 ## Table of Contents
 
@@ -19,6 +18,7 @@ This repository contains specialized AGENTS.md files designed for AI coding agen
 ## Available Guides
 
 ### 🐳 [DDEV/AGENTS.md](./DDEV/AGENTS.md)
+
 **For Docker-based development with DDEV**
 
 - **Environment**: DDEV (Docker-based local development)
@@ -28,6 +28,7 @@ This repository contains specialized AGENTS.md files designed for AI coding agen
 - **Best for**: Modern containerized development environments
 
 ### 🖥️ [Vanilla/AGENTS.md](./Vanilla/AGENTS.md)
+
 **For traditional server-based development**
 
 - **Environment**: Traditional LAMP/LEMP stack
@@ -37,6 +38,7 @@ This repository contains specialized AGENTS.md files designed for AI coding agen
 - **Best for**: Classic server environments, hosting providers, manual infrastructure
 
 ### ☸️ [Lagoon/AGENTS.md](./Lagoon/AGENTS.md)
+
 **For amazee.io Lagoon (Kubernetes-based hosting)**
 
 - **Environment**: amazee.io Lagoon with Kubernetes
@@ -47,17 +49,18 @@ This repository contains specialized AGENTS.md files designed for AI coding agen
 
 ## Version Compatibility
 
-| AGENTS.md Variant | Drupal | PHP | Drush | Special Requirements |
-|---|---|---|---|---|
-| DDEV | 10.x / 11.x | 8.3+ | 13+ | DDEV 1.23+ |
-| Vanilla | 10.x / 11.x | 8.3+ | 13+ | LAMP/LEMP stack |
-| Lagoon | 10.x / 11.x | 8.3+ | 13+ | Lagoon CLI, lagoon-sync |
+| AGENTS.md Variant | Drupal      | PHP  | Drush | Special Requirements    |
+| ----------------- | ----------- | ---- | ----- | ----------------------- |
+| DDEV              | 10.x / 11.x | 8.3+ | 13+   | DDEV 1.23+              |
+| Vanilla           | 10.x / 11.x | 8.3+ | 13+   | LAMP/LEMP stack         |
+| Lagoon            | 10.x / 11.x | 8.3+ | 13+   | Lagoon CLI, lagoon-sync |
 
 ## What's Included
 
 Each AGENTS.md file contains:
 
 ### 📚 **Development Patterns** (with code examples)
+
 - Services & Dependency Injection
 - Entity API & Queries
 - Plugin System
@@ -76,22 +79,26 @@ Each AGENTS.md file contains:
 - Content Moderation & Workflows
 
 ### 🛡️ **Security & Performance**
+
 - Security best practices
 - Performance optimization
 - Caching strategies (render, Varnish, Redis)
 - Lazy builders and placeholder strategies
 
 ### 🧪 **Testing & Quality** (with code examples)
+
 - PHPUnit testing framework
 - Unit, Kernel, and Functional test stubs
 - Code quality tools (PHPStan, Psalm, PHPCS)
 - JavaScript testing
 
 ### 🚫 **Anti-Patterns**
+
 - 14 common mistakes to avoid
 - Clear "Never Do This" guidelines
 
 ### 🔧 **Development Workflow**
+
 - Module scaffolding template with full file structure
 - Environment-specific commands
 - Debugging tools and tables
@@ -100,11 +107,9 @@ Each AGENTS.md file contains:
 
 ## How to Use AGENTS.md?
 
-1. **Get the repository**
-   Download or clone this repository to your computer
+1. **Get the repository** Download or clone this repository to your computer
 
-2. **Extract the files** (if downloading)
-   Extract the downloaded ZIP file and open the folder
+2. **Extract the files** (if downloading) Extract the downloaded ZIP file and open the folder
 
 3. **Copy the right AGENTS.md file**
    - If you use DDEV for development:
@@ -125,6 +130,7 @@ Each AGENTS.md file contains:
 ## Key Features
 
 ### ✅ **What We Provide**
+
 - Comprehensive Drupal development patterns with concrete code examples
 - Environment-specific instructions (DDEV, Vanilla, Lagoon)
 - Security and performance guidelines
@@ -136,6 +142,7 @@ Each AGENTS.md file contains:
 - Troubleshooting guides
 
 ### ❌ **What We Don't Include**
+
 - Infrastructure setup tutorials
 - Server configuration details
 - Basic Drupal installation guides
@@ -145,6 +152,7 @@ Each AGENTS.md file contains:
 ## Architecture
 
 The guides follow the [agents.md](https://agents.md) standard format:
+
 - **Simple, open format** for AI coding agents
 - **Living documentation** that evolves with Drupal
 - **Environment-specific versions** for different setups

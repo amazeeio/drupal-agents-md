@@ -1,14 +1,16 @@
 ---
 title: Testing & Quality Assurance
 description: >
-  Drupal testing with PHPUnit: Unit, Kernel, and Functional test examples.
-  Covers test base classes, configuration, and code quality tools.
+  Drupal testing with PHPUnit: Unit, Kernel, and Functional test examples. Covers test base classes, configuration, and code quality tools.
+
+
 tags: [testing, phpunit, unit-test, kernel-test, functional-test, quality]
 ---
 
 # Testing & Quality Assurance
 
 ## Running Tests
+
 ```bash
 # All tests
 vendor/bin/phpunit -v --coverage-html coverage/
@@ -25,6 +27,7 @@ vendor/bin/phpunit modules/custom/my_module/tests/src/Unit/
 ```
 
 ## Unit Test (fastest — no Drupal bootstrap)
+
 ```php
 namespace Drupal\Tests\my_module\Unit;
 
@@ -50,11 +53,13 @@ class MyServiceTest extends UnitTestCase {
   }
 }
 ```
+
 - **Location**: `tests/src/Unit/`
 - **Base class**: `Drupal\Tests\UnitTestCase`
 - **Dependencies**: Mock with Prophecy
 
 ## Kernel Test (partial Drupal + in-memory DB)
+
 ```php
 namespace Drupal\Tests\my_module\Kernel;
 
@@ -86,10 +91,12 @@ class MyModuleKernelTest extends KernelTestBase {
   }
 }
 ```
+
 - **Location**: `tests/src/Kernel/`
 - **Base class**: `Drupal\KernelTests\KernelTestBase`
 
 ## Functional Test (full browser simulation)
+
 ```php
 namespace Drupal\Tests\my_module\Functional;
 
@@ -115,10 +122,12 @@ class MyModuleFunctionalTest extends BrowserTestBase {
   }
 }
 ```
+
 - **Location**: `tests/src/Functional/`
 - **Base class**: `Drupal\Tests\BrowserTestBase`
 
 ## Quality Tools
+
 ```bash
 vendor/bin/phpstan analyse       # Static analysis
 vendor/bin/drupal-check          # Deprecated code check
@@ -127,5 +136,6 @@ vendor/bin/phpcs --standard=Drupal .  # Code style
 ```
 
 ## Related Files
+
 - [02-code-standards.md](02-code-standards.md) — Code style rules
 - [03-module-scaffolding.md](03-module-scaffolding.md) — Test directory structure

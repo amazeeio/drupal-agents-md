@@ -1,9 +1,9 @@
 ---
 title: Hooks
 description: >
-  Drupal hook system: implementation patterns, common hooks with code examples,
-  and best practices. Hooks live in modulename.module files — keep them thin
-  and delegate complex logic to services.
+  Drupal hook system: implementation patterns, common hooks with code examples, and best practices. Hooks live in modulename.module files — keep them thin and delegate complex logic to services.
+
+
 tags: [hooks, hook-form-alter, hook-theme, hook-cron, hook-entity-presave]
 ---
 
@@ -14,6 +14,7 @@ Hooks are implemented in `modulename.module` files. Keep them thin — delegate 
 ## Common Hooks with Examples
 
 ### hook_form_alter()
+
 ```php
 /**
  * Implements hook_form_alter().
@@ -27,6 +28,7 @@ function my_module_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form
 ```
 
 ### hook_theme()
+
 ```php
 /**
  * Implements hook_theme().
@@ -45,6 +47,7 @@ function my_module_theme($existing, $type, $theme, $path): array {
 ```
 
 ### hook_entity_presave()
+
 ```php
 /**
  * Implements hook_entity_presave().
@@ -57,6 +60,7 @@ function my_module_entity_presave(\Drupal\Core\Entity\EntityInterface $entity): 
 ```
 
 ### hook_cron()
+
 ```php
 /**
  * Implements hook_cron().
@@ -67,12 +71,14 @@ function my_module_cron(): void {
 ```
 
 ## Key Points
+
 - **Naming**: Custom hooks follow `hook_modulename_action()` pattern
 - **Type hints**: Always use type hints on parameters
 - **Order**: Hooks fire in module weight order (lowest first)
 - **Best practice**: Keep hooks focused — call services for complex logic. See [12-anti-patterns.md](12-anti-patterns.md) #14.
 
 ## Other Common Hooks
+
 - `hook_menu_links_discovered_alter()` — Modify menu links
 - `hook_theme_registry_alter()` — Modify theme hooks
 - `hook_entity_delete()` — React to entity deletion
@@ -80,6 +86,7 @@ function my_module_cron(): void {
 - `hook_field_info()` — Define field types
 
 ## Related Files
+
 - [04-services-di.md](04-services-di.md) — Where complex logic should live
 - [08-forms.md](08-forms.md) — Form-related hooks
 - [14-events.md](14-events.md) — EventSubscribers (alternative to many hooks)
