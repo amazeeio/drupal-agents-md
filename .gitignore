@@ -1,3 +1,10 @@
 # Drupal AGENTS.md Project .gitignore
 
 .claude
+.cursor
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode/
+.idea/

@@ -8,6 +8,7 @@ This repository contains specialized AGENTS.md files designed for AI coding agen
 ## Table of Contents
 
 - [Available Guides](#available-guides)
+- [Version Compatibility](#version-compatibility)
 - [What's Included](#whats-included)
 - [How to Use AGENTS.md?](#how-to-use-agentsmd)
 - [Key Features](#key-features)
@@ -35,42 +36,67 @@ This repository contains specialized AGENTS.md files designed for AI coding agen
 - **Features**: Traditional server configuration, direct file system access
 - **Best for**: Classic server environments, hosting providers, manual infrastructure
 
+### ☸️ [Lagoon/AGENTS.md](./Lagoon/AGENTS.md)
+**For amazee.io Lagoon (Kubernetes-based hosting)**
+
+- **Environment**: amazee.io Lagoon with Kubernetes
+- **Setup**: Lagoon CLI, lagoon-sync, Drush aliases
+- **Commands**: Lagoon CLI + Drush alias commands
+- **Features**: Auto-deployment, environment variables, Varnish, Redis, post-rollout tasks
+- **Best for**: Projects hosted on amazee.io Lagoon or self-hosted Lagoon
+
+## Version Compatibility
+
+| AGENTS.md Variant | Drupal | PHP | Drush | Special Requirements |
+|---|---|---|---|---|
+| DDEV | 10.x / 11.x | 8.3+ | 13+ | DDEV 1.23+ |
+| Vanilla | 10.x / 11.x | 8.3+ | 13+ | LAMP/LEMP stack |
+| Lagoon | 10.x / 11.x | 8.3+ | 13+ | Lagoon CLI, lagoon-sync |
+
 ## What's Included
 
 Each AGENTS.md file contains:
 
-### 📚 **Development Patterns**
+### 📚 **Development Patterns** (with code examples)
 - Services & Dependency Injection
 - Entity API & Queries
 - Plugin System
 - Hooks Implementation
-- Forms API
+- Forms API (simple + config forms)
 - Routes & Controllers
+- Access Control
 - Batch API & Queue API
 - AJAX Forms
+- Events & EventSubscribers
+- Render API
+- Migration API
+- Configuration Management
+- Composer Management
+- JavaScript & Drupal Behaviors
+- Content Moderation & Workflows
 
 ### 🛡️ **Security & Performance**
 - Security best practices
 - Performance optimization
-- Caching strategies
-- Render caching techniques
+- Caching strategies (render, Varnish, Redis)
+- Lazy builders and placeholder strategies
 
-### 🧪 **Testing & Quality**
+### 🧪 **Testing & Quality** (with code examples)
 - PHPUnit testing framework
-- Unit, Kernel, and Functional tests
-- Code quality tools
+- Unit, Kernel, and Functional test stubs
+- Code quality tools (PHPStan, Psalm, PHPCS)
 - JavaScript testing
 
+### 🚫 **Anti-Patterns**
+- 14 common mistakes to avoid
+- Clear "Never Do This" guidelines
+
 ### 🔧 **Development Workflow**
-- Essential commands
-- Debugging tools
+- Module scaffolding template with full file structure
+- Environment-specific commands
+- Debugging tools and tables
 - Performance profiling
 - Troubleshooting common issues
-
-### 📋 **Best Practices**
-- Drupal coding standards
-- Version control workflow
-- Pull request guidelines
 
 ## How to Use AGENTS.md?
 
@@ -85,26 +111,36 @@ Each AGENTS.md file contains:
      - Navigate to the `DDEV` folder
      - Copy the `AGENTS.md` file
      - Paste it in your Drupal project's main folder
-   - If you use traditional server setup:
+   - If you use a traditional server setup:
      - Navigate to the `Vanilla` folder
      - Copy the `AGENTS.md` file
      - Paste it in your Drupal project's main folder
+   - If you use amazee.io Lagoon:
+     - Navigate to the `Lagoon` folder
+     - Copy the `AGENTS.md` file
+     - Paste it in your Drupal project's main folder
+
+4. **Start your AI agent** — Open your AI coding tool (Cursor, Claude Code, etc.) in the project directory. It will automatically read the AGENTS.md file.
 
 ## Key Features
 
 ### ✅ **What We Provide**
-- Comprehensive Drupal development patterns
-- Environment-specific instructions
+- Comprehensive Drupal development patterns with concrete code examples
+- Environment-specific instructions (DDEV, Vanilla, Lagoon)
 - Security and performance guidelines
-- Testing strategies and quality assurance
-- Troubleshooting common issues
+- Testing strategies with complete test class stubs
+- Anti-patterns section ("Never Do This")
+- Full module scaffolding template
+- Configuration management guidance
+- Migration API examples
+- Troubleshooting guides
 
 ### ❌ **What We Don't Include**
 - Infrastructure setup tutorials
 - Server configuration details
-- Environment variable examples
+- Basic Drupal installation guides
 - Apache/Nginx configuration
-- Basic Drupal installation
+- Drupal 7/8/9 specific guidance
 
 ## Architecture
 
@@ -112,23 +148,25 @@ The guides follow the [agents.md](https://agents.md) standard format:
 - **Simple, open format** for AI coding agents
 - **Living documentation** that evolves with Drupal
 - **Environment-specific versions** for different setups
-- **Pattern-focused content** rather than code snippets
+- **Code-first content** with concrete, copy-pasteable examples
+- **Internal table of contents** for quick navigation within each guide
 
 ## Contributing
 
-This is a work in progress. Areas for improvement:
-- Additional development patterns
-- Environment-specific optimizations
-- Real-world examples and use cases
-- Integration with modern development tools
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines on how to contribute to this project.
+
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md) for a history of changes.
 
 ## Resources
 
 - **Drupal Documentation**: [drupal.org/docs](https://www.drupal.org/docs)
 - **Drupal API**: [api.drupal.org](https://api.drupal.org)
 - **DrupalAtYourFingertips**: [drupalatyourfingertips.com](https://www.drupalatyourfingertips.com)
+- **amazee.io Docs**: [docs.lagoon.sh](https://docs.lagoon.sh)
 - **agents.md Standard**: [agents.md](https://agents.md)
 
 ---
 
-**Note**: These guides focus on Drupal 10.x+ development patterns and modern best practices. Always adapt instructions to your specific project requirements and environment constraints.
+**Note**: These guides focus on Drupal 10.x+ and 11.x development patterns and modern best practices. Always adapt instructions to your specific project requirements and environment constraints.
