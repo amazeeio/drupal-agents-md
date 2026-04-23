@@ -12,6 +12,7 @@
 #   --variant=vanilla    Install Vanilla variant (default)
 #   --variant=ddev       Install DDEV variant
 #   --variant=lagoon     Install Lagoon variant
+#   --branch=name       Use a specific git branch (default: main)
 #   --kb-only            Install only the .kb/ folder (no AGENTS.md)
 #   --no-kb              Install only the AGENTS.md file (no .kb/ folder)
 #   --force              Overwrite existing files without prompting
