@@ -1,0 +1,72 @@
+name: Validate AGENTS.md
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Lint & Validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint Markdown files
+        run: npm run lint
+
+      - name: Check formatting
+        run: npx prettier --check '**/*.md'
+
+      - name: Check markdown code fences
+        run: |
+          errors=0
+          while IFS= read -r -d '' file; do
+            opens=$(grep -c '^\s*```' "$file" || true)
+            if [ $((opens % 2)) -ne 0 ]; then
+              echo "ERROR: Unclosed code fence in $file (found $opens fence markers)"
+              errors=$((errors + 1))
+            fi
+          done < <(find . -name "*.md" -not -path "./.git/*" -not -path "./node_modules/*" -print0)
+          exit $errors
+
+      - name: Validate YAML code blocks
+        run: |
+          errors=0
+          while IFS= read -r -d '' file; do
+            python3 -c "
+          import re, sys, yaml
+          content = open('$file').read()
+          blocks = re.findall(r'\`\`\`yaml\n(.*?)\`\`\`', content, re.DOTALL)
+          for i, block in enumerate(blocks):
+            try:
+              yaml.safe_load(block)
+            except yaml.YAMLError as e:
+              print(f'  ERROR in $file YAML block {i+1}: {e}')
+              sys.exit(1)
+          if blocks:
+            print(f'  OK: $file — {len(blocks)} YAML blocks')
+          " || errors=$((errors + 1))
+          done < <(find . -name "*.md" -not -path "./.git/*" -not -path "./node_modules/*" -print0)
+          exit $errors
+
+      - name: Check all variants exist
+        run: |
+          for variant in DDEV Vanilla Lagoon; do
+            if [ ! -f "$variant/AGENTS.md" ]; then
+              echo "ERROR: Missing $variant/AGENTS.md"
+              exit 1
+            fi
+            lines=$(wc -l < "$variant/AGENTS.md")
+            echo "OK: $variant/AGENTS.md ($lines lines)"
+          done

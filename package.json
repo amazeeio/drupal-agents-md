@@ -1,0 +1,15 @@
+{
+  "name": "drupal-agents-md",
+  "private": true,
+  "description": "AI Agent Development Guides for Drupal",
+  "scripts": {
+    "format": "prettier --write '**/*.md'",
+    "lint": "markdownlint '**/*.md'",
+    "lint:fix": "prettier --write '**/*.md' && markdownlint --fix '**/*.md'",
+    "check": "markdownlint '**/*.md' && prettier --check '**/*.md'"
+  },
+  "devDependencies": {
+    "markdownlint-cli": "^0.44.0",
+    "prettier": "^3.5.0"
+  }
+}

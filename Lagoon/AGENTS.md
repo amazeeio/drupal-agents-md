@@ -1,18 +1,18 @@
-# AGENTS.md: AI Agent Guide for Drupal Development with DDEV
+# AGENTS.md: AI Agent Guide for Drupal Development on Lagoon
 
-**AI Agent Instructions**: This guide provides comprehensive instructions for AI coding agents working on Drupal projects using DDEV. Follow these guidelines for consistent, high-quality contributions. Human contributors should use README.md instead.
+**AI Agent Instructions**: This guide provides comprehensive instructions for AI coding agents working on Drupal projects deployed on amazee.io Lagoon (Kubernetes-based hosting). Follow these guidelines for consistent, high-quality contributions. Human contributors should use README.md instead.
 
 ## Table of Contents
 
 - [Project Overview](#project-overview)
-- [DDEV Quick Setup](#ddev-quick-setup)
+- [Lagoon Quick Setup](#lagoon-quick-setup)
 - [Module Scaffolding Template](#module-scaffolding-template)
 - [Code Style and Standards](#code-style-and-standards)
 - [Drupal Development Patterns](#drupal-development-patterns)
 - [Security & Performance Guidelines](#security--performance-guidelines)
 - [Anti-Patterns — Never Do This](#anti-patterns--never-do-this)
 - [Testing & Quality Assurance](#testing--quality-assurance)
-- [DDEV Development Workflow](#ddev-development-workflow)
+- [Lagoon Development Workflow](#lagoon-development-workflow)
 - [Advanced Development Patterns](#advanced-development-patterns)
 - [Additional Topics](#additional-topics)
 - [Troubleshooting](#troubleshooting)
@@ -20,102 +20,177 @@
 
 ## Project Overview
 
-- **Core Technology**: Drupal 10.x / 11.x (verify via `ddev exec composer show drupal/core`)
-- **Development Environment**: DDEV (Docker-based development environment)
+- **Core Technology**: Drupal 10.x / 11.x (verify via `composer show drupal/core`)
+- **Hosting Platform**: amazee.io Lagoon (Kubernetes-based)
+- **Local Development**: DDEV or Docker Compose (Lagoon-compatible)
 - **Key Components**: Custom modules, themes, configuration management, Composer dependencies
-- **Environment**: PHP 8.3+, MySQL/MariaDB, Nginx (all managed by DDEV)
-- **Development Tools**: Composer, Drush 13+, Git, DDEV CLI
-- **Important**: All DDEV commands should be run from project root. Use `ddev exec` for Drupal-specific commands.
+- **Environment**: PHP 8.3+, MariaDB, Nginx, Varnish (managed by Lagoon)
+- **Development Tools**: Composer, Drush 13+, Git, Lagoon CLI, lagoon-sync
+- **Important**: Use Drush aliases for remote operations. Local commands run directly or via DDEV.
 
-## DDEV Quick Setup
+## Lagoon Quick Setup
 
 ### Prerequisites
 
 ```bash
-# Install DDEV (macOS)
-brew install ddev/ddev/ddev
+# Install Lagoon CLI (macOS)
+brew tap uselagoon/lagoon-cli
+brew install lagoon
 
-# Or download from https://ddev.readthedocs.io/en/stable/users/installation/
+# Or download from https://github.com/uselagoon/lagoon-cli/releases
 # Verify installation
-ddev --version
+lagoon --version
+
+# Install lagoon-sync for database/file synchronization
+brew install uselagoon/lagoon-sync/lagoon-sync
+
+# Configure Lagoon CLI connection
+lagoon config add \
+  --graphql YOUR-API-URL/graphql \
+  --ui YOUR-UI-URL \
+  --hostname YOUR.DOMAIN
 ```
 
-### Initialize DDEV Project
+### Lagoon Project Files
 
-```bash
-# Clone the repository
-git clone <repository-url> my-drupal-project
-cd my-drupal-project
+Lagoon requires these files in the repository root:
 
-# Initialize DDEV configuration
-ddev config --project-type=drupal --docroot=web --php-version=8.3
-
-# Start DDEV environment
-ddev start
-
-# Install Composer dependencies
-ddev composer install
-
-# Install Drupal
-ddev exec drush site:install standard \
-  --db-url=mysql://db:db@db/db \
-  --account-name=admin \
-  --account-pass=admin \
-  --yes
-
-# Enable development modules
-ddev exec drush pm:enable devel kint webprofiler -y
-
-# Clear caches
-ddev exec drush cr
-
-# Launch site in browser
-ddev launch
-```
-
-### Essential DDEV Commands
-
-```bash
-# Environment management
-ddev start                # Start development environment
-ddev stop                 # Stop environment
-ddev restart              # Restart environment
-ddev delete               # Delete environment (careful!)
-
-# Database operations
-ddev snapshot             # Create database snapshot
-ddev restore-snapshot     # Restore database snapshot
-ddev import-db            # Import database from file
-ddev export-db            # Export database to file
-
-# Development tools
-ddev exec <command>       # Execute command in container
-ddev ssh                  # SSH into web container
-ddev logs                 # View container logs
-ddev describe             # Show environment details
-ddev launch               # Open site in browser
-```
-
-### DDEV Configuration
-
-Create `.ddev/config.yaml` for project-specific settings:
+**`.lagoon.yml`** — Lagoon configuration:
 
 ```yaml
-# .ddev/config.yaml
-type: drupal
-docroot: web
-php_version: "8.3"
-webserver_type: nginx-fpm
-router_http_port: "80"
-router_https_port: "443"
-xdebug_enabled: false
-additional_hostnames: []
-additional_fqdns: []
+docker-compose-yaml: docker-compose.yml
 
-# Drupal-specific settings
-disable_settings_management: false
-web_environment:
-  - DRUSH_OPTIONS_URI=https://my-drupal-project.ddev.site
+# Environment variables
+environment_variables:
+  git_sha: "true"
+
+# Environments that auto-deploy
+environments:
+  main:
+    routes:
+      - nginx:
+          - example.com
+          - www.example.com
+    cronjobs:
+      - name: drush cron
+        schedule: "*/15 * * * *"
+        command: drush cron
+        service: nginx
+
+# Post-rollout tasks
+tasks:
+  post-rollout:
+    - run:
+        name: drush updb
+        command: drush updatedb --no-cache-clear
+        service: nginx
+        shell: bash
+    - run:
+        name: drush cim
+        command: drush config:import --yes
+        service: nginx
+        shell: bash
+    - run:
+        name: drush cr
+        command: drush cache:rebuild
+        service: nginx
+        shell: bash
+```
+
+**`docker-compose.yml`** (Lagoon-flavored):
+
+```yaml
+# Must use the Lagoon-compatible docker-compose format
+# See: https://docs.lagoon.sh/lagoon/using-lagoon-the-basics/docker-compose-yml/
+```
+
+### Essential Lagoon Commands
+
+```bash
+# Deployment
+lagoon deploy branch --project <project> --branch <branch>  # Deploy a branch
+lagoon deploy promote --project <project> --source <branch> --destination <env>  # Promote to production
+
+# Environment management
+lagoon list environments --project <project>                 # List environments
+lagoon get environment --project <project> --environment <env>  # Get env details
+lagoon delete environment --project <project> --environment <env>  # Delete env
+
+# Logs & debugging
+lagoon logs --project <project> --environment <env>          # View environment logs
+lagoon ssh --project <project> --environment <env>           # SSH into pod
+
+# Variables
+lagoon list variables --project <project> --environment <env>
+lagoon add variable --project <project> --environment <env> --name NAME --value VALUE
+```
+
+### Database & File Synchronization
+
+```bash
+# Sync database from production to local
+lagoon-sync sync mariadb -p <project> -e main -t local
+
+# Sync database from staging to local
+lagoon-sync sync mariadb -p <project> -e staging -t local
+
+# Sync files from production to local
+lagoon-sync sync files -p <project> -e main -t local
+
+# Using Drush aliases (alternative)
+drush sql:sync @lagoon.main @self
+drush rsync @lagoon.main:%files @self:%files
+```
+
+### Environment Variables
+
+Lagoon automatically injects these variables:
+
+| Variable                  | Description                               |
+| ------------------------- | ----------------------------------------- |
+| `LAGOON_PROJECT`          | Project name                              |
+| `LAGOON_ENVIRONMENT`      | Environment name (branch)                 |
+| `LAGOON_ENVIRONMENT_TYPE` | `production`, `staging`, or `development` |
+| `LAGOON_GIT_BRANCH`       | Git branch name                           |
+| `LAGOON_GIT_SHA`          | Full Git commit SHA                       |
+| `LAGOON_ROUTE`            | Primary route/URL of the environment      |
+| `LAGOON_ROUTES`           | Comma-separated list of all routes        |
+
+Use these in `settings.php` for environment-aware configuration:
+
+```php
+// settings.php — Lagoon environment detection
+$lagoon_env_type = getenv('LAGOON_ENVIRONMENT_TYPE') ?: 'local';
+$is_production = $lagoon_env_type === 'production';
+
+if ($is_production) {
+  $config['system.performance']['css']['preprocess'] = TRUE;
+  $config['system.performance']['js']['preprocess'] = TRUE;
+}
+else {
+  // Development settings.
+  $config['system.performance']['css']['preprocess'] = FALSE;
+  $config['system.performance']['js']['preprocess'] = FALSE;
+  $settings['cache']['bins']['render'] = 'cache.backend.null';
+}
+```
+
+### Drush Aliases
+
+Lagoon provides Drush aliases automatically. Use them for remote operations:
+
+```bash
+# List available aliases
+drush site:alias
+
+# Run Drush commands on remote environments
+drush @lagoon.main status
+drush @lagoon.staging config:export
+drush @lagoon.main cache:rebuild
+
+# Sync between environments
+drush sql:sync @lagoon.main @lagoon.staging
+drush rsync @lagoon.main:%files @lagoon.staging:%files
 ```
 
 ## Module Scaffolding Template
@@ -133,7 +208,6 @@ web/modules/custom/my_module/
 ├── my_module.links.action.yml      # Action links
 ├── my_module.links.task.yml        # Task (tab) links
 ├── my_module.libraries.yml         # CSS/JS libraries
-├── my_module.routing.yml           # Route definitions
 ├── composer.json                   # PSR-4 autoloading
 ├── src/
 │   ├── Controller/
@@ -233,12 +307,12 @@ Adhere to Drupal coding standards (PSR-12 with Drupal extensions). Use Coder and
 - **YAML**: 2-space indentation, lowercase keys
 - **Twig**: `{{ }}` for output, `{% %}` for logic; always escape with `|e`
 
-- **Linting**:
+- **Linting** (run locally or via DDEV):
 
   ```bash
-  ddev exec vendor/bin/phpcs --standard=Drupal --extensions=php,inc,module,install,info,yml src/
-  ddev exec vendor/bin/phpcs --standard=DrupalPractice --extensions=php,inc,module,install,info,yml src/
-  ddev exec vendor/bin/phpcs --standard=Drupal --fix src/
+  vendor/bin/phpcs --standard=Drupal --extensions=php,inc,module,install,info,yml src/
+  vendor/bin/phpcs --standard=DrupalPractice --extensions=php,inc,module,install,info,yml src/
+  vendor/bin/phpcs --standard=Drupal --fix src/
   ```
 
 **Reject any code that fails Drupal Coder sniffs.**
@@ -290,7 +364,7 @@ class MyController extends ControllerBase {
 
 - **Core services** like `@current_user`, `@entity_type.manager`, `@database`, `@config.factory`, `@logger.factory` are available
 - **Best practice**: Avoid static `\Drupal::` calls in favor of dependency injection
-- **Service discovery**: Use `ddev exec drush php:eval "print_r(\Drupal::getContainer()->getServiceIds());"` to see available services
+- **Service discovery**: Use `drush php:eval "print_r(\Drupal::getContainer()->getServiceIds());"` to see available services
 - **Location**: Place service classes in `src/` directory with proper namespace
 
 ### Entity API & Queries
@@ -693,7 +767,7 @@ my_module.access_checker:
 - **SQL Injection**: Use Entity Query or proper parameter binding
 - **XSS Prevention**: Always use `|e` filter in Twig, `#markup` for trusted HTML only
 - **File uploads**: Validate file types and sizes; use Drupal's file API
-- **Database credentials**: Never commit credentials to version control
+- **Database credentials**: Never commit credentials — Lagoon injects them via environment variables
 - **Render arrays**: Never use `#markup` with unsanitized user input; use `#plain_text` or `check_plain()`
 
 ### Performance Best Practices
@@ -702,9 +776,10 @@ my_module.access_checker:
 - **Cache tags**: Use entity-based tags like `['node:123']` or list-based tags like `['node_list']`
 - **Cache contexts**: Apply user-specific contexts like `['user.roles']` for personalized content
 - **Lazy loading**: Use `#lazy_builder` for expensive operations that can be loaded separately
-- **Placeholder strategy**: Set `#create_placeholder: TRUE` for lazy builders to improve initial page load
+- **Placeholder strategy**: Set `#create_placeholder` => TRUE for lazy builders to improve initial page load
 - **Cache max-age**: Set appropriate `max-age` values based on content freshness requirements
-- **Avoid premature optimization**: Profile first, then optimize based on actual bottlenecks
+- **Varnish**: Lagoon provides Varnish by default — ensure proper cache headers and invalidation
+- **Redis**: Lagoon supports Redis — configure in `settings.php` for distributed caching
 - **Database queries**: Use entity queries instead of raw SQL for better caching and security
 - **Entity loading**: Load multiple entities at once with `loadMultiple()` instead of individual loads
 
@@ -723,25 +798,26 @@ $build = [
 ];
 ```
 
-**Lazy builder for expensive operations**:
+**Redis configuration for Lagoon** (in `settings.php`):
 
 ```php
-$build['expensive_content'] = [
-  '#lazy_builder' => [
-    '\Drupal\my_module\Service\MyLazyBuilder::renderExpensiveContent',
-    [$param1, $param2],
-  ],
-  '#create_placeholder' => TRUE,
-];
+// Redis configuration for Lagoon
+if (getenv('LAGOON')) {
+  $settings['redis.connection']['interface'] = 'PhpRedis';
+  $settings['redis.connection']['host'] = getenv('REDIS_HOST') ?: 'redis';
+  $settings['redis.connection']['port'] = getenv('REDIS_SERVICE_PORT') ?: 6379;
+  $settings['cache']['default'] = 'cache.backend.redis';
+  $settings['container_yamls'][] = DRUPAL_ROOT . '/sites/redis.services.yml';
+}
 ```
 
 ### Caching Strategies
 
+- **Varnish (Lagoon default)**: Full-page caching for anonymous users with automatic purge
+- **Redis**: Persistent object cache — configure via `settings.php`
 - **Render cache**: Cache complex markup with proper tags/contexts
 - **Dynamic page cache**: Automatically handles cacheability for anonymous users
-- **Internal page cache**: Serves full cached pages for anonymous users
 - **Entity cache**: Core entity caching is automatic — invalidate with cache tags
-- **Redis/Memcache**: Configure for distributed caching in production
 
 ## Anti-Patterns — Never Do This
 
@@ -767,7 +843,7 @@ These are common mistakes that an AI agent must avoid:
 
 10. **Never ignore cacheability metadata** — Every render array that depends on data must specify `#cache` tags, contexts, and max-age. Missing cache metadata causes stale content or unnecessary cache invalidation.
 
-11. **Never commit `settings.php` with database credentials** — Use environment variables or `settings.local.php` (excluded from VCS).
+11. **Never commit `settings.php` with database credentials** — On Lagoon, credentials are injected via environment variables automatically.
 
 12. **Never use `node_load()` or other deprecated procedural functions** — Use the entity type manager: `\Drupal::entityTypeManager()->getStorage('node')->load()`.
 
@@ -783,20 +859,20 @@ Aim for ≥ 80% code coverage. Drupal provides multiple test types:
 
 ```bash
 # Run all tests with coverage
-ddev exec vendor/bin/phpunit -v --coverage-html coverage/
+vendor/bin/phpunit -v --coverage-html coverage/
 
 # Run specific test suites
-ddev exec vendor/bin/phpunit --testsuite unit          # Unit tests (fast)
-ddev exec vendor/bin/phpunit --testsuite kernel         # Kernel tests
-ddev exec vendor/bin/phpunit --testsuite functional     # Functional tests (slower)
-ddev exec vendor/bin/phpunit --testsuite javascript     # JavaScript tests
+vendor/bin/phpunit --testsuite unit          # Unit tests (fast)
+vendor/bin/phpunit --testsuite kernel         # Kernel tests
+vendor/bin/phpunit --testsuite functional     # Functional tests (slower)
+vendor/bin/phpunit --testsuite javascript     # JavaScript tests
 
 # Run specific tests
-ddev exec vendor/bin/phpunit --filter MyModuleUnitTest
-ddev exec vendor/bin/phpunit web/modules/custom/my_module/tests/src/Unit/
+vendor/bin/phpunit --filter MyModuleUnitTest
+vendor/bin/phpunit web/modules/custom/my_module/tests/src/Unit/
 
 # Run with custom configuration
-SIMPLETEST_DB=sqlite://localhost/tmp.sqlite ddev exec vendor/bin/phpunit
+SIMPLETEST_DB=sqlite://localhost/tmp.sqlite vendor/bin/phpunit
 ```
 
 ### Unit Test Example
@@ -881,7 +957,6 @@ class MyModuleFunctionalTest extends BrowserTestBase {
 
   protected function setUp(): void {
     parent::setUp();
-    // Create a test user with permissions.
     $this->drupalCreateContentType(['type' => 'article', 'name' => 'Article']);
     $user = $this->drupalCreateUser(['access content', 'create article content']);
     $this->drupalLogin($user);
@@ -891,7 +966,6 @@ class MyModuleFunctionalTest extends BrowserTestBase {
     $this->drupalGet('/node/add/article');
     $this->assertSession()->statusCodeEquals(200);
 
-    // Submit the node form.
     $edit = [
       'title[0][value]' => 'Test Article Title',
     ];
@@ -900,160 +974,95 @@ class MyModuleFunctionalTest extends BrowserTestBase {
   }
 
   public function testMyModulePageAccess(): void {
-    // Anonymous users should not access custom pages.
     $this->drupalGet('/my-module/custom/1');
     $this->assertSession()->statusCodeEquals(403);
   }
 }
 ```
 
-### Code Quality Tools in DDEV
+### Code Quality Tools
 
 ```bash
-# Static analysis (add to composer require)
-ddev exec vendor/bin/phpstan analyse                      # PHPStan analysis
-ddev exec vendor/bin/psalm                               # Psalm analysis
+# Static analysis
+vendor/bin/phpstan analyse
+vendor/bin/psalm
 
 # Security scanning
-ddev exec vendor/bin/drupal-check                        # Check for deprecated code
-ddev exec composer audit                                 # Check for security advisories
+vendor/bin/drupal-check
+composer audit
 
 # Accessibility testing
-ddev exec vendor/bin/phpunit --group accessibility       # Accessibility tests
-```
-
-### JavaScript Testing
-
-```bash
-# Install JavaScript dependencies
-ddev exec npm install
-
-# Run JavaScript tests
-ddev exec npm run test                                   # Jest tests
-ddev exec npm run test:a11y                             # Accessibility tests
+vendor/bin/phpunit --group accessibility
 ```
 
 ### Before Submitting Code
 
 ```bash
 # Quality checklist
-ddev exec vendor/bin/phpcs --standard=Drupal .          # Code style
-ddev exec vendor/bin/phpunit                             # Run tests
-ddev exec drush cr                                       # Clear caches
-ddev exec drush updatedb                                 # Run updates
+vendor/bin/phpcs --standard=Drupal .
+vendor/bin/phpunit
+drush cr
+drush updatedb
 ```
 
-## DDEV Development Workflow
+## Lagoon Development Workflow
 
 ### Project Structure
 
 - **Modules** → `web/modules/custom/<module_name>`
 - **Themes** → `web/themes/custom/<theme_name>`
-- **Configuration** → Export with `ddev exec drush config:export`
+- **Configuration** → Export with `drush config:export`
 - **Profiles** → `web/profiles/custom/<profile_name>`
+- **Lagoon config** → `.lagoon.yml` in project root
+- **Docker Compose** → `docker-compose.yml` in project root
 
-### Essential Development Commands
+### Deployment Workflow
 
 ```bash
-# Cache management (run inside DDEV)
-ddev exec drush cr                    # Clear all caches
-ddev exec drush cache:rebuild         # Alternative cache clear
+# Feature development workflow
+git checkout -b feature/my-feature
+# ... make changes ...
+git push origin feature/my-feature
+# Lagoon auto-deploys the branch as a new environment
 
-# Configuration management
-ddev exec drush config:export         # Export configuration
-ddev exec drush config:import         # Import configuration
+# Check deployment status
+lagoon get environment --project <project> --environment feature-my-feature
 
-# Database operations
-ddev snapshot                         # Create snapshot before changes
-ddev exec drush updatedb              # Run database updates
+# View deployment logs
+lagoon logs --project <project> --environment feature-my-feature
+
+# After review, merge to main
+git checkout main
+git merge feature/my-feature
+git push origin main
+# Lagoon auto-deploys to production
 ```
 
-### Debugging in DDEV
-
-#### Core Debugging & Information Commands
-
-| Command | Purpose |
-| --- | --- |
-| `ddev exec drush status` | Shows Drupal root, site path, database connection, Drush version |
-| `ddev exec drush watchdog:show` | Lists recent log messages (dblog entries). Filters: `--severity=Error` |
-| `ddev exec drush watchdog:delete all` | Clears the watchdog log |
-| `ddev exec drush sql:query "SELECT * FROM watchdog ORDER BY wid DESC LIMIT 50"` | Direct SQL access to logs |
-
-#### Cache Debugging
-
-| Command                                 | Purpose                        |
-| --------------------------------------- | ------------------------------ |
-| `ddev exec drush cache:rebuild`         | Rebuilds all caches            |
-| `ddev exec drush cache:get <bin>:<cid>` | Retrieve a specific cache item |
-| `ddev exec drush cache:clear <bin>`     | Clear only one cache bin       |
-
-#### Configuration Debugging
-
-| Command                                           | Purpose                                |
-| ------------------------------------------------- | -------------------------------------- |
-| `ddev exec drush config:get <name>`               | Show a single configuration value      |
-| `ddev exec drush config:set <name> <key> <value>` | Temporarily change a config value      |
-| `ddev exec drush config:export`                   | Export active config to sync directory |
-| `ddev exec drush config:import`                   | Import config                          |
-| `ddev exec drush config:delete <name>`            | Remove a config object                 |
-
-#### Module/Theming Debugging
-
-| Command                                                  | Purpose                     |
-| -------------------------------------------------------- | --------------------------- |
-| `ddev exec drush pm:list --type=module --status=enabled` | List enabled modules        |
-| `ddev exec drush pm:enable <module>`                     | Enable a module             |
-| `ddev exec drush pm:uninstall <module>`                  | Fully uninstall a module    |
-| `ddev exec drush theme:debug`                            | Lists all theme suggestions |
-
-#### Database & Entity Debugging
-
-| Command                           | Purpose                                                 |
-| --------------------------------- | ------------------------------------------------------- |
-| `ddev exec drush sql:connect`     | Outputs the CLI command to connect to the DB            |
-| `ddev exec drush sql:query`       | Run arbitrary SQL                                       |
-| `ddev exec drush entity:info`     | Show entity type definitions                            |
-| `ddev exec drush php`             | Opens an interactive PHP shell with Drupal bootstrapped |
-| `ddev exec drush php:eval "code"` | Execute arbitrary PHP code in Drupal context            |
-
-#### DDEV-Specific Debugging
+### Remote Drush Commands
 
 ```bash
-# Enable Xdebug debugging
-# Add to .ddev/config.yaml:
-# xdebug_enabled: true
+# Run Drush on a remote Lagoon environment
+drush @lagoon.main status
+drush @lagoon.main config:export
+drush @lagoon.main config:import --yes
+drush @lagoon.main cache:rebuild
+drush @lagoon.main updatedb
+drush @lagoon.main pm:enable my_module
 
-# DDEV container debugging
-ddev logs -f web                       # Follow web container logs
-ddev logs -f db                        # Follow database container logs
-ddev describe                          # Show environment details and status
+# Sync production DB to local for development
+lagoon-sync sync mariadb -p <project> -e main -t local
+drush cr  # Rebuild caches after sync
 
-# Access PHP error logs
-ddev exec tail -f /var/log/apache2/error.log
-
-# Database connection debugging
-ddev exec drush sql:connect            # Test database connection
-ddev describe                          # Check environment status
-```
-
-### Performance Profiling in DDEV
-
-```bash
-# Performance analysis
-ddev exec drush cr                     # Rebuild caches
-ddev exec drush sql:query "EXPLAIN ANALYZE SELECT ..."  # Query analysis
-ddev exec drush site:status           # System status check
-
-# Use Webprofiler module for detailed profiling
-# Access at https://my-drupal-project.ddev.site/admin/config/development/devel/webprofiler
+# Sync files from production
+lagoon-sync sync files -p <project> -e main -t local
 ```
 
 ### Version Control Workflow
 
 - **Commit messages**: Format `[#123456] Brief descriptive title`
-- **Branch from**: `develop` branch for features
+- **Branch from**: `main` branch for features (auto-deployed by Lagoon)
 - **Atomic commits**: One logical change per commit
-- **Before pushing**: Run linting and tests
+- **Before pushing**: Run linting and tests locally
 
 ## Advanced Development Patterns
 
@@ -1080,7 +1089,6 @@ class MyEventSubscriber implements EventSubscriberInterface {
   }
 
   public function onKernelRequest(RequestEvent $event): void {
-    // Act on every request.
     $request = $event->getRequest();
     // ...
   }
@@ -1099,8 +1107,6 @@ my_module.event_subscriber:
   tags:
     - { name: event_subscriber }
 ```
-
-**Drupal-specific events**: `HookEventDispatcher` module provides events for most Drupal hooks. Core events include entity events (`EntityBase::create()`, presave, etc.) and kernel events.
 
 ### Configuration Management
 
@@ -1148,21 +1154,20 @@ $value = \Drupal::config('my_module.settings')->get('api_key');
 
 ```bash
 # Export all configuration
-ddev exec drush config:export
+drush config:export
 
 # Import configuration
-ddev exec drush config:import
+drush config:import
 
 # View a single config value
-ddev exec drush config:get system.site
+drush config:get system.site
 
 # Edit config interactively
-ddev exec drush config:edit my_module.settings
+drush config:edit my_module.settings
 ```
 
 - **`config/install/`**: Required config installed when module is enabled
 - **`config/optional/`**: Config installed only if dependencies are met
-- **Config override**: Use `$config['system.performance']['css']['preprocess'] = FALSE;` in `settings.php` for environment-specific overrides
 - **Config split**: Use `config_split` module for per-environment configuration (dev/staging/prod)
 
 ### Batch API for Long Operations
@@ -1217,10 +1222,6 @@ function my_module_batch_finished(bool $success, array $results, array $operatio
 }
 ```
 
-- **Purpose**: Process large datasets without PHP timeout issues
-- **Use cases**: Data migration, bulk updates, file processing, API calls
-- **Memory management**: Processes data in chunks to prevent memory exhaustion
-
 ### Queue API for Background Processing
 
 ```php
@@ -1246,7 +1247,6 @@ class MyQueueWorker extends QueueWorkerBase implements ContainerFactoryPluginInt
   }
 
   public function processItem($data): void {
-    // Process the queue item.
     if (!isset($data['type'])) {
       throw new \InvalidArgumentException('Missing type in queue item.');
     }
@@ -1255,32 +1255,17 @@ class MyQueueWorker extends QueueWorkerBase implements ContainerFactoryPluginInt
 }
 ```
 
-**Adding items to the queue**:
-
-```php
-\Drupal::queue('my_module_processor')->createItem(['type' => 'cleanup', 'node_id' => 123]);
-```
-
-- **Cron integration**: `cron = {"time" = 60}` processes items during cron for up to 60 seconds
-- **Reliability**: Failed items are released back to the queue automatically
-- **Logging**: Always log queue processing outcomes
-
 ### AJAX Forms
 
 - **Trigger elements**: Add `#ajax` property to form elements (select, checkbox, button)
 - **Callback method**: Reference callback method using `::methodName` syntax
 - **Wrapper element**: Specify target element ID for AJAX response replacement
-- **Response format**: Return form element or render array from callback
-- **Event types**: Use 'change', 'click', 'blur' events as needed
-- **Progress indicator**: Automatically shows loading indicator during AJAX requests
 - **Error handling**: Implement try-catch blocks in AJAX callbacks
 - **Form state**: Use `$form_state->getTriggeringElement()` to identify trigger
-- **Multiple triggers**: Can have multiple AJAX elements in same form
 
 ### Render API Deep Dive
 
 ```php
-// Full render array with all common properties
 $build = [
   '#type' => 'container',
   '#attributes' => ['class' => ['my-wrapper']],
@@ -1306,32 +1291,20 @@ $build = [
       'my_module' => ['endpoint' => '/api/items'],
     ],
   ],
-  '#weight' => 10,
 ];
 ```
 
-- **`#pre_render` / `#post_render`**: Callbacks to modify render arrays before/after rendering
-- **`#lazy_builder`**: Defers rendering of expensive content
-- **`#create_placeholder`**: Generates a placeholder for BigPipe-style loading
-- **`#attached`**: Attach CSS/JS libraries, settings, HTML head links, and HTTP headers
-
 ### Migration API
 
-```php
-// In migrations/my_migration.yml — source plugin
+```yaml
+# migrations/my_migration.yml
 source:
   plugin: csv
   path: /path/to/data.csv
   header_row_count: 1
   keys:
     - id
-  column_names:
-    -
-      id: [id, 'Unique ID']
-    -
-      title: [title, 'Title']
 
-# Process plugin
 process:
   title: title
   body/value: body
@@ -1341,224 +1314,101 @@ process:
   type:
     plugin: default_value
     default_value: article
-  uid:
-    plugin: default_value
-    default_value: 1
 
-# Destination plugin
 destination:
   plugin: entity:node
   default_bundle: article
-```
-
-**Custom process plugin**:
-
-```php
-namespace Drupal\my_module\Plugin\migrate\process;
-
-use Drupal\migrate\ProcessPluginBase;
-use Drupal\migrate\MigrateExecutableInterface;
-use Drupal\migrate\Row;
-
-/**
- * Custom process plugin.
- *
- * @MigrateProcessPlugin(
- *   id = "my_custom_process"
- * )
- */
-class MyCustomProcess extends ProcessPluginBase {
-
-  public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property): mixed {
-    // Transform the value during migration.
-    return strtoupper(trim($value));
-  }
-}
 ```
 
 ### Composer Management
 
 ```bash
 # Add a module
-ddev composer require drupal/admin_toolbar
-
-# Add a module with a patch
-ddev composer require drupal/some_module
-# Then add patch to composer.json extras:
-# "patches": {
-#     "drupal/some_module": {
-#         "Fix description": "https://www.drupal.org/files/issues/2024-01-01/issue-12345-1.patch"
-#     }
-# }
+composer require drupal/admin_toolbar
 
 # Update Drupal core
-ddev composer update drupal/core --with-all-dependencies
+composer update drupal/core --with-all-dependencies
 
 # Run post-install steps
-ddev exec drush updatedb
-ddev exec drush config:import
-ddev exec drush cr
+drush updatedb
+drush config:import
+drush cr
 ```
-
-**composer.json best practices**:
-
-- Use `drupal/core-recommended` for production, `drupal/core-dev` for development
-- Pin major versions: `"drupal/core-recommended": "^11"`
-- Use `composer-patches` plugin for community patches
-- Commit `composer.lock` to version control
-- Use `drupal.org` composer endpoint: `composer config repositories.drupal composer https://packages.drupal.org/8`
 
 ### JavaScript & Frontend
 
-**Drupal behaviors** (not jQuery document.ready):
+**Drupal behaviors**:
 
 ```javascript
-// js/my-module.js
 (function (Drupal, drupalSettings) {
   "use strict";
 
   Drupal.behaviors.myModuleBehavior = {
     attach: function (context, settings) {
-      // Run on every page load and AJAX response.
       const elements = context.querySelectorAll(".my-element");
       elements.forEach(function (element) {
         element.addEventListener("click", handleClick);
       });
     },
     detach: function (context, settings, trigger) {
-      // Clean up when content is removed (AJAX, etc.).
       const elements = context.querySelectorAll(".my-element");
       elements.forEach(function (element) {
         element.removeEventListener("click", handleClick);
       });
     },
   };
-
-  function handleClick(event) {
-    // Handle click.
-  }
 })(Drupal, drupalSettings);
 ```
 
-**Library definition** (`my_module.libraries.yml`):
+## Troubleshooting
 
-```yaml
-my_module.styles:
-  version: VERSION
-  css:
-    component:
-      css/my-module.css: {}
-  js:
-    js/my-module.js: {}
-  dependencies:
-    - core/drupal
-    - core/drupalSettings
-```
-
-**Attaching libraries**:
-
-```php
-// In render array
-$build['#attached']['library'][] = 'my_module/my_module.styles';
-
-// In twig
-{{
-  attach_library('my_module/my_module.styles')
-}}
-```
-
-### Content Moderation & Workflows
-
-```php
-// Workflows are typically configured via UI, but modules can interact:
-use Drupal\workflows\Entity\Workflow;
-
-// Load a workflow
-$workflow = Workflow::load('editorial');
-
-// Check moderation state of a node
-if ($node->hasField('moderation_state')) {
-  $state = $node->get('moderation_state')->value;
-}
-
-// Transition a node to a new state
-$node->set('moderation_state', 'published');
-$node->save();
-```
-
-## DDEV-Specific Troubleshooting
-
-### Common DDEV Issues
+### Lagoon Deployment Issues
 
 ```bash
-# DDEV won't start
-ddev poweroff && ddev start
+# Check deployment status
+lagoon get environment --project <project> --environment <env>
 
-# Port conflicts — edit .ddev/config.yaml to change ports
-# router_http_port: "8080"
-# router_https_port: "8443"
+# View deployment logs
+lagoon logs --project <project> --environment <env>
 
-# Memory issues — increase PHP memory in .ddev/php/php.ini
-# memory_limit = 512M
+# SSH into a pod for debugging
+lagoon ssh --project <project> --environment <env>
 
-# Composer memory issues
-ddev exec php -d memory_limit=-1 /usr/local/bin/composer install
-
-# Database connection issues
-ddev describe    # Check environment status
-ddev exec drush sql:connect  # Test database connection
+# Check remote Drush status
+drush @lagoon.<env> status
 ```
 
-### Performance Issues in DDEV
+### Database Sync Issues
 
 ```bash
-# Identify slow queries
-ddev exec drush sql:query "SELECT * FROM watchdog WHERE type = 'php' ORDER BY wid DESC LIMIT 10"
+# If lagoon-sync fails, try Drush
+drush sql:sync @lagoon.main @self
 
-# Check cache settings
-ddev exec drush config:get system.performance
-
-# Enable performance modules
-ddev exec drush pm:enable memcache redis -y
+# Clear caches after sync
+drush cr
 ```
 
-### Module/Theme Development Issues in DDEV
+### Performance Issues
 
 ```bash
-ddev exec drush cr
+# Check remote cache settings
+drush @lagoon.main config:get system.performance
 
-# Service not found
-ddev exec drush config:get core.extension
+# Check watchdog for errors
+drush @lagoon.main watchdog:show --severity=Error
 
-# Twig template not loading
-ddev exec drush cr
-
-# Cron issues
-ddev exec drush cron
-ddev exec drush watchdog:show --type=cron
-```
-
-### Testing Issues in DDEV
-
-```bash
-# PHPUnit configuration — ensure phpunit.xml.dist exists and is configured
-cp web/core/phpunit.xml.dist phpunit.xml
-
-# Database setup for testing — edit phpunit.xml for SIMPLETEST_DB and SIMPLETEST_BASE_URL
-# SIMPLETEST_DB=mysql://db:db@db/db_test
-# SIMPLETEST_BASE_URL=http://my-drupal-project.ddev.site
-
-# Browser tests failing — install Selenium or ChromeDriver
-# Ensure test environment variables are set
+# Check Redis connection
+drush @lagoon.main php:eval "var_dump(\Drupal::service('cache.default')->get('test'));"
 ```
 
 ## Additional Resources
 
-### DDEV Documentation
+### Lagoon Documentation
 
-- **DDEV Official Docs**: https://ddev.readthedocs.io
-- **DDEV Quick Start**: https://ddev.readthedocs.io/en/stable/users/quickstart/
-- **DDEV Drupal Guide**: https://ddev.readthedocs.io/en/stable/users/topics/drupal/
+- **Lagoon Docs**: https://docs.lagoon.sh
+- **Lagoon CLI**: https://github.com/uselagoon/lagoon-cli
+- **lagoon-sync**: https://github.com/uselagoon/lagoon-sync
+- **Drupal on Lagoon**: https://docs.lagoon.sh/lagoon/using-lagoon-the-basics/drupal/
 
 ### Drupal Documentation
 
@@ -1566,12 +1416,10 @@ cp web/core/phpunit.xml.dist phpunit.xml
 - **Developer Guide**: https://www.drupal.org/docs/develop
 - **Coding Standards**: https://www.drupal.org/docs/develop/standards
 - **Security Best Practices**: https://www.drupal.org/docs/develop/security
-- **Configuration Management**: https://www.drupal.org/docs/administering-a-drupal-site/configuration-management
-- **Migration API**: https://www.drupal.org/docs/8/api/migrate-api
 
 ### Community Resources
 
+- **amazee.io Blog**: https://amazee.io/blog
 - **DrupalAtYourFingertips**: https://www.drupalatyourfingertips.com
 - **Drupal Answers**: https://drupal.stackexchange.com
-- **Drupal.org**: https://www.drupal.org
 - **Drupal Slack**: https://drupal.slack.com
