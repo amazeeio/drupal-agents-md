@@ -2,6 +2,8 @@
 
 This repository contains specialized AGENTS.md files designed for AI coding agents working on Drupal projects. These guides provide comprehensive instructions for Drupal development following modern best practices.
 
+> **🧪 Try the [Experimental Knowledge Base Architecture](./experimental/)** — A new slim AGENTS.md + `.kb/` folder pattern that loads only what the agent needs, cutting token usage from ~8,000 to ~400 for simple tasks. [Learn more →](./experimental/README.md)
+
 > **⚠️ Warning: Work in Progress** This is an evolving project. The guides are actively being refined and updated. Use with caution and always test in development environments.
 
 ## Table of Contents
