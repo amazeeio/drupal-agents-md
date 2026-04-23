@@ -61,14 +61,7 @@ your-drupal-project/
 Run this from your Drupal project's root directory:
 
 ```bash
-# Default: Vanilla variant + knowledge base
 curl -fsSL https://raw.githubusercontent.com/amazeeio/drupal-agents-md/main/experimental/install.sh | bash
-
-# DDEV variant
-curl -fsSL https://raw.githubusercontent.com/amazeeio/drupal-agents-md/main/experimental/install.sh | bash -s -- --variant=ddev
-
-# Lagoon variant
-curl -fsSL https://raw.githubusercontent.com/amazeeio/drupal-agents-md/main/experimental/install.sh | bash -s -- --variant=lagoon
 ```
 
 Or with wget:
@@ -81,9 +74,6 @@ wget -qO- https://raw.githubusercontent.com/amazeeio/drupal-agents-md/main/exper
 
 | Option              | Description                                 |
 | ------------------- | ------------------------------------------- |
-| `--variant=vanilla` | Vanilla variant (default)                   |
-| `--variant=ddev`    | DDEV variant                                |
-| `--variant=lagoon`  | Lagoon variant                              |
 | `--branch=<name>`   | Use a specific git branch (default: `main`) |
 | `--kb-only`         | Install only `.kb/` folder (no AGENTS.md)   |
 | `--no-kb`           | Install only AGENTS.md (no `.kb/` folder)   |
