@@ -159,7 +159,8 @@ fi
 # ─── Apply variant-specific path in AGENTS.md ─────────────────────────────────
 # The experimental AGENTS.md uses .kb/ relative paths.
 # For DDEV/Lagoon variants, we also copy the variant-specific content.
-VARIANT_AGENTS="${REPO_DIR}/${VARIANT^^}/AGENTS.md"
+VARIANT_UPPER=$(echo "$VARIANT" | tr '[:lower:]' '[:upper:]')
+VARIANT_AGENTS="${REPO_DIR}/${VARIANT_UPPER}/AGENTS.md"
 # Normalize: DDEV stays uppercase, Vanilla/Lagoon need title case
 case "$VARIANT" in
   ddev) VARIANT_AGENTS="${REPO_DIR}/DDEV/AGENTS.md" ;;
@@ -175,7 +176,7 @@ if [ "$INCLUDE_AGENTS" = true ]; then
   # If using a non-vanilla variant, append a note about the variant
   if [ "$VARIANT" != "vanilla" ]; then
     # Prepend variant notice to the AGENTS.md
-    VARIANT_NOTE="\n<!--\n  Variant: ${VARIANT^^}\n  This project uses the slim AGENTS.md with .kb/ knowledge base.\n  For the full standalone ${VARIANT^^} guide, see:\n  https://github.com/amazeeio/drupal-agents-md/tree/main/${VARIANT^^}\n-->\n"
+    VARIANT_NOTE="\n<!--\n  Variant: ${VARIANT_UPPER}\n  This project uses the slim AGENTS.md with .kb/ knowledge base.\n  For the full standalone ${VARIANT_UPPER} guide, see:\n  https://github.com/amazeeio/drupal-agents-md/tree/main/${VARIANT_UPPER}\n-->\n"
     # Use a temp file for portability
     echo -e "${VARIANT_NOTE}" | cat - "${TARGET_DIR}/AGENTS.md" > "${TARGET_DIR}/AGENTS.md.tmp" && mv "${TARGET_DIR}/AGENTS.md.tmp" "${TARGET_DIR}/AGENTS.md"
   fi
