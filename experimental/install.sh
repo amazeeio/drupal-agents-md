@@ -159,7 +159,8 @@ fi
 # ─── Apply variant-specific path in AGENTS.md ─────────────────────────────────
 # The experimental AGENTS.md uses .kb/ relative paths.
 # For DDEV/Lagoon variants, we also copy the variant-specific content.
-VARIANT_AGENTS="${REPO_DIR}/${VARIANT^^}/AGENTS.md"
+VARIANT_UPPER=$(echo "$VARIANT" | tr '[:lower:]' '[:upper:]')
+VARIANT_AGENTS="${REPO_DIR}/${VARIANT_UPPER}/AGENTS.md"
 # Normalize: DDEV stays uppercase, Vanilla/Lagoon need title case
 case "$VARIANT" in
   ddev) VARIANT_AGENTS="${REPO_DIR}/DDEV/AGENTS.md" ;;
