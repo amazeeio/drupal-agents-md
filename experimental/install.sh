@@ -176,7 +176,7 @@ if [ "$INCLUDE_AGENTS" = true ]; then
   # If using a non-vanilla variant, append a note about the variant
   if [ "$VARIANT" != "vanilla" ]; then
     # Prepend variant notice to the AGENTS.md
-    VARIANT_NOTE="\n<!--\n  Variant: ${VARIANT^^}\n  This project uses the slim AGENTS.md with .kb/ knowledge base.\n  For the full standalone ${VARIANT^^} guide, see:\n  https://github.com/amazeeio/drupal-agents-md/tree/main/${VARIANT^^}\n-->\n"
+    VARIANT_NOTE="\n<!--\n  Variant: ${VARIANT_UPPER}\n  This project uses the slim AGENTS.md with .kb/ knowledge base.\n  For the full standalone ${VARIANT^^} guide, see:\n  https://github.com/amazeeio/drupal-agents-md/tree/main/${VARIANT^^}\n-->\n"
     # Use a temp file for portability
     echo -e "${VARIANT_NOTE}" | cat - "${TARGET_DIR}/AGENTS.md" > "${TARGET_DIR}/AGENTS.md.tmp" && mv "${TARGET_DIR}/AGENTS.md.tmp" "${TARGET_DIR}/AGENTS.md"
   fi
